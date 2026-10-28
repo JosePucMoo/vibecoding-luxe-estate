@@ -32,3 +32,11 @@ export interface MarketProperty {
   visibilityClass?: string;
 }
 
+export interface PaginatedMarketProperties {
+  properties: MarketProperty[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+
