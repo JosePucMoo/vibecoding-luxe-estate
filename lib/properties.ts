@@ -1,80 +1,203 @@
+import { cache } from "react";
 import { supabase } from "./supabase";
 import {
   FeaturedProperty,
+  ListingType,
   MarketProperty,
   PaginatedMarketProperties,
+  PropertyDetail,
+  PropertyImage,
 } from "@/types/property";
 
 export const MARKET_PAGE_SIZE = 8;
 
+const DEFAULT_FALLBACK_IMAGE: PropertyImage = {
+  url: "https://lh3.googleusercontent.com/aida-public/AB6AXuBjNDU9iE4zwPuWeg-CjIrLI-87GF24_LgOggcXT0vmUYfMx2q1dJAheiqWqVN-39uiwyLKEfP18FsG1vtUyAPX902OhGEfM4clcQiDsJW7MBbc_BoMtZXtqIeFKIfkHnkIPwmFbQg8Eaan6ULV99T8AUVUuKsro0HoTMrIaxw5pp1uSuQlF8X5Dait4US1W4vmyZnVioXbFnCoaOOZ0LPorb0rVGAIQd9reWcpqq27C0oO4ltnsCTHIcjIm0xp-2qVbRJSIZzWPv0",
+  alt: "Luxury residence exterior",
+};
+
 interface FeaturedPropertyRow {
   id: string;
+  slug: string;
   title: string;
   location: string;
   price: string;
   beds: number;
-  baths: string;
+  baths: number | string;
   area: string;
-  badge: string;
-  image_url: string;
-  image_alt: string;
+  featured_badge: string | null;
+  images: PropertyImage[] | null;
   is_favorite: boolean;
   sort_order: number;
 }
 
 interface MarketPropertyRow {
   id: string;
+  slug: string;
   title: string;
   location: string;
   price: string;
   period: string | null;
-  listing_type: "FOR SALE" | "FOR RENT";
+  listing_type: ListingType;
   beds: number;
-  baths: number;
+  baths: number | string;
   area: string;
-  image_url: string;
-  image_alt: string;
+  images: PropertyImage[] | null;
   is_favorite: boolean;
   sort_order: number;
 }
 
+interface PropertyDetailRow {
+  id: string;
+  slug: string;
+  title: string;
+  location: string;
+  price: string;
+  period: string | null;
+  listing_type: ListingType;
+  beds: number;
+  baths: number | string;
+  area: string;
+  garage: number;
+  description: string[] | null;
+  amenities: string[] | null;
+  badges: string[] | null;
+  is_featured: boolean;
+  featured_badge: string | null;
+  latitude: number;
+  longitude: number;
+  agent_name: string;
+  agent_role: string;
+  agent_image: string;
+  estimated_payment: string | null;
+  images: PropertyImage[] | null;
+  is_favorite: boolean;
+}
+
+function normalizeImages(
+  images: PropertyImage[] | null | undefined,
+  fallbackTitle: string
+): PropertyImage[] {
+  if (!Array.isArray(images) || images.length === 0) {
+    return [{ url: DEFAULT_FALLBACK_IMAGE.url, alt: fallbackTitle }];
+  }
+
+  return images
+    .filter((img) => Boolean(img && typeof img.url === "string" && img.url.trim()))
+    .map((img, index) => ({
+      url: img.url,
+      alt: img.alt?.trim() || `${fallbackTitle} - Photo ${index + 1}`,
+    }));
+}
+
+function formatBaths(baths: number | string): number | string {
+  const num = typeof baths === "string" ? parseFloat(baths) : baths;
+  if (Number.isNaN(num)) return baths;
+  return Number.isInteger(num) ? num : num;
+}
+
 function mapFeaturedProperty(row: FeaturedPropertyRow): FeaturedProperty {
+  const normalizedImages = normalizeImages(row.images, row.title);
+  const primaryImage = normalizedImages[0];
+
   return {
     id: row.id,
+    slug: row.slug,
     title: row.title,
     location: row.location,
     price: row.price,
     beds: row.beds,
-    baths: row.baths,
+    baths: formatBaths(row.baths),
     area: row.area,
-    badge: row.badge,
-    imageUrl: row.image_url,
-    imageAlt: row.image_alt,
+    badge: row.featured_badge || "Exclusive",
+    imageUrl: primaryImage.url,
+    imageAlt: primaryImage.alt,
+    images: normalizedImages,
     isFavorite: row.is_favorite,
   };
 }
 
 function mapMarketProperty(row: MarketPropertyRow): MarketProperty {
+  const normalizedImages = normalizeImages(row.images, row.title);
+  const primaryImage = normalizedImages[0];
+
   return {
     id: row.id,
+    slug: row.slug,
     title: row.title,
     location: row.location,
     price: row.price,
     period: row.period ?? undefined,
     listingType: row.listing_type,
     beds: row.beds,
-    baths: row.baths,
+    baths: formatBaths(row.baths),
     area: row.area,
-    imageUrl: row.image_url,
-    imageAlt: row.image_alt,
+    imageUrl: primaryImage.url,
+    imageAlt: primaryImage.alt,
+    images: normalizedImages,
+    isFavorite: row.is_favorite,
+  };
+}
+
+function mapPropertyDetail(row: PropertyDetailRow): PropertyDetail {
+  const normalizedImages = normalizeImages(row.images, row.title);
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    location: row.location,
+    price: row.price,
+    period: row.period ?? undefined,
+    listingType: row.listing_type,
+    beds: row.beds,
+    baths: formatBaths(row.baths),
+    area: row.area,
+    garage: row.garage ?? 2,
+    description:
+      row.description && row.description.length > 0
+        ? row.description
+        : [
+            `Experience modern luxury in ${row.title}, located in ${row.location}. Designed with an emphasis on indoor-outdoor living, this residence features expansive windows that flood the interiors with natural light.`,
+            "The open-concept layout is equipped with premium finishes and custom cabinetry, offering an exceptional sanctuary for contemporary living.",
+          ],
+    amenities:
+      row.amenities && row.amenities.length > 0
+        ? row.amenities
+        : [
+            "Smart Home System",
+            "Swimming Pool",
+            "Central Heating & Cooling",
+            "Electric Vehicle Charging",
+            "Private Gym",
+            "Wine Cellar",
+          ],
+    badges:
+      row.badges && row.badges.length > 0 ? row.badges : ["Premium", "New"],
+    isFeatured: row.is_featured,
+    featuredBadge: row.featured_badge ?? undefined,
+    latitude: row.latitude ?? 37.4419,
+    longitude: row.longitude ?? -122.143,
+    agent: {
+      name: row.agent_name || "Sarah Jenkins",
+      role: row.agent_role || "Top Rated Agent",
+      imageUrl:
+        row.agent_image ||
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuD4TxUmdQRb2VMjuaNxLEwLorv_dgHzoET2_wL5toSvew6nhtziaR3DX-U69DBN7J74yO6oKokpw8tqEFutJf13MeXghCy7FwZuAxnoJel6FYcKeCRUVinpZtrNnkZvXd-MY5_2MAtRD7JP5BieHixfCaeAPW04jm-y-nvF3HIrwcZ_HRDk_MrNP5WiPV3u9zNrEgM-SQoWGh4xLVSV444aZAbVl03mjjsW5WBpIeodCyqJxprTDp6Q157D06VxcdUSCf-l9UKQT-w",
+    },
+    estimatedPayment: row.estimated_payment || "$5,430/mo",
+    images: normalizedImages,
     isFavorite: row.is_favorite,
   };
 }
 
 export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
   const { data, error } = await supabase
-    .from("featured_properties")
-    .select("*")
+    .from("properties")
+    .select(
+      "id, slug, title, location, price, beds, baths, area, featured_badge, images, is_favorite, sort_order"
+    )
+    .eq("is_featured", true)
     .order("sort_order", { ascending: true });
 
   if (error) {
@@ -93,8 +216,12 @@ export async function getMarketProperties(
   const to = from + MARKET_PAGE_SIZE - 1;
 
   const { data, error, count } = await supabase
-    .from("market_properties")
-    .select("*", { count: "exact" })
+    .from("properties")
+    .select(
+      "id, slug, title, location, price, period, listing_type, beds, baths, area, images, is_favorite, sort_order",
+      { count: "exact" }
+    )
+    .eq("is_featured", false)
     .order("sort_order", { ascending: true })
     .range(from, to);
 
@@ -114,3 +241,25 @@ export async function getMarketProperties(
   };
 }
 
+export const getPropertyBySlug = cache(
+  async (slug: string): Promise<PropertyDetail | null> => {
+    const { data, error } = await supabase
+      .from("properties")
+      .select(
+        "id, slug, title, location, price, period, listing_type, beds, baths, area, garage, description, amenities, badges, is_featured, featured_badge, latitude, longitude, agent_name, agent_role, agent_image, estimated_payment, images, is_favorite"
+      )
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`Error fetching property with slug "${slug}":`, error);
+      throw new Error(`Failed to fetch property: ${error.message}`);
+    }
+
+    if (!data) {
+      return null;
+    }
+
+    return mapPropertyDetail(data as PropertyDetailRow);
+  }
+);
