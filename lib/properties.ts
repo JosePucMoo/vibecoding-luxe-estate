@@ -6,6 +6,7 @@ import {
   MarketProperty,
   PaginatedMarketProperties,
   PropertyDetail,
+  PropertyFilters,
   PropertyImage,
 } from "@/types/property";
 
@@ -208,20 +209,89 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
   return (data as FeaturedPropertyRow[]).map(mapFeaturedProperty);
 }
 
+export function hasActiveFilters(filters: PropertyFilters): boolean {
+  return Boolean(
+    (filters.q && filters.q.trim().length > 0) ||
+      (filters.type &&
+        filters.type.trim().length > 0 &&
+        filters.type.toLowerCase() !== "all" &&
+        filters.type.toLowerCase() !== "any type") ||
+      filters.listingType ||
+      (filters.minPrice !== undefined && filters.minPrice > 0) ||
+      (filters.maxPrice !== undefined && filters.maxPrice > 0) ||
+      (filters.beds !== undefined && filters.beds > 0) ||
+      (filters.baths !== undefined && filters.baths > 0) ||
+      (filters.amenities && filters.amenities.length > 0)
+  );
+}
+
 export async function getMarketProperties(
-  page: number = 1
+  filtersOrPage: number | PropertyFilters = 1
 ): Promise<PaginatedMarketProperties> {
-  const validPage = Math.max(1, Math.floor(page) || 1);
+  const filters: PropertyFilters =
+    typeof filtersOrPage === "number"
+      ? { page: filtersOrPage }
+      : filtersOrPage;
+
+  const validPage = Math.max(1, Math.floor(filters.page ?? 1) || 1);
   const from = (validPage - 1) * MARKET_PAGE_SIZE;
   const to = from + MARKET_PAGE_SIZE - 1;
+  const filteringActive = hasActiveFilters(filters);
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from("properties")
     .select(
       "id, slug, title, location, price, period, listing_type, beds, baths, area, images, is_favorite, sort_order",
       { count: "exact" }
-    )
-    .eq("is_featured", false)
+    );
+
+  if (!filteringActive) {
+    query = query.eq("is_featured", false);
+  }
+
+  if (filters.q && filters.q.trim()) {
+    const safeQ = filters.q.trim().replace(/[,()]/g, " ").trim();
+    if (safeQ) {
+      query = query.or(
+        `title.ilike.%${safeQ}%,location.ilike.%${safeQ}%,property_type.ilike.%${safeQ}%`
+      );
+    }
+  }
+
+  if (
+    filters.type &&
+    filters.type.trim() &&
+    filters.type.toLowerCase() !== "all" &&
+    filters.type.toLowerCase() !== "any type"
+  ) {
+    query = query.ilike("property_type", filters.type.trim());
+  }
+
+  if (filters.listingType) {
+    query = query.eq("listing_type", filters.listingType);
+  }
+
+  if (filters.minPrice !== undefined && filters.minPrice > 0) {
+    query = query.gte("price_value", filters.minPrice);
+  }
+
+  if (filters.maxPrice !== undefined && filters.maxPrice > 0) {
+    query = query.lte("price_value", filters.maxPrice);
+  }
+
+  if (filters.beds !== undefined && filters.beds > 0) {
+    query = query.gte("beds", filters.beds);
+  }
+
+  if (filters.baths !== undefined && filters.baths > 0) {
+    query = query.gte("baths", filters.baths);
+  }
+
+  if (filters.amenities && filters.amenities.length > 0) {
+    query = query.contains("amenities", filters.amenities);
+  }
+
+  const { data, error, count } = await query
     .order("sort_order", { ascending: true })
     .range(from, to);
 
@@ -239,6 +309,70 @@ export async function getMarketProperties(
     totalPages,
     currentPage: validPage,
   };
+}
+
+export async function countMatchingProperties(
+  filters: PropertyFilters
+): Promise<number> {
+  const filteringActive = hasActiveFilters(filters);
+
+  let query = supabase
+    .from("properties")
+    .select("id", { count: "exact", head: true });
+
+  if (!filteringActive) {
+    query = query.eq("is_featured", false);
+  }
+
+  if (filters.q && filters.q.trim()) {
+    const safeQ = filters.q.trim().replace(/[,()]/g, " ").trim();
+    if (safeQ) {
+      query = query.or(
+        `title.ilike.%${safeQ}%,location.ilike.%${safeQ}%,property_type.ilike.%${safeQ}%`
+      );
+    }
+  }
+
+  if (
+    filters.type &&
+    filters.type.trim() &&
+    filters.type.toLowerCase() !== "all" &&
+    filters.type.toLowerCase() !== "any type"
+  ) {
+    query = query.ilike("property_type", filters.type.trim());
+  }
+
+  if (filters.listingType) {
+    query = query.eq("listing_type", filters.listingType);
+  }
+
+  if (filters.minPrice !== undefined && filters.minPrice > 0) {
+    query = query.gte("price_value", filters.minPrice);
+  }
+
+  if (filters.maxPrice !== undefined && filters.maxPrice > 0) {
+    query = query.lte("price_value", filters.maxPrice);
+  }
+
+  if (filters.beds !== undefined && filters.beds > 0) {
+    query = query.gte("beds", filters.beds);
+  }
+
+  if (filters.baths !== undefined && filters.baths > 0) {
+    query = query.gte("baths", filters.baths);
+  }
+
+  if (filters.amenities && filters.amenities.length > 0) {
+    query = query.contains("amenities", filters.amenities);
+  }
+
+  const { count, error } = await query;
+  if (error) {
+    console.error("Error counting matching properties:", error);
+    return 0;
+  }
+
+  return count ?? 0;
 }
 
 export const getPropertyBySlug = cache(
