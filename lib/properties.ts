@@ -11,6 +11,7 @@ import {
 } from "@/types/property";
 
 export const MARKET_PAGE_SIZE = 8;
+export const FEATURED_PROPERTIES_LIMIT = 2;
 
 const DEFAULT_FALLBACK_IMAGE: PropertyImage = {
   url: "https://lh3.googleusercontent.com/aida-public/AB6AXuBjNDU9iE4zwPuWeg-CjIrLI-87GF24_LgOggcXT0vmUYfMx2q1dJAheiqWqVN-39uiwyLKEfP18FsG1vtUyAPX902OhGEfM4clcQiDsJW7MBbc_BoMtZXtqIeFKIfkHnkIPwmFbQg8Eaan6ULV99T8AUVUuKsro0HoTMrIaxw5pp1uSuQlF8X5Dait4US1W4vmyZnVioXbFnCoaOOZ0LPorb0rVGAIQd9reWcpqq27C0oO4ltnsCTHIcjIm0xp-2qVbRJSIZzWPv0",
@@ -199,7 +200,8 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
       "id, slug, title, location, price, beds, baths, area, featured_badge, images, is_favorite, sort_order"
     )
     .eq("is_featured", true)
-    .order("sort_order", { ascending: true });
+    .order("sort_order", { ascending: true })
+    .limit(FEATURED_PROPERTIES_LIMIT);
 
   if (error) {
     console.error("Error fetching featured properties:", error);

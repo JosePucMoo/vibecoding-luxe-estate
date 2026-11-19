@@ -2,7 +2,12 @@ import Navbar from "@/components/navbar";
 import HeroSearch from "@/components/home/hero-search";
 import FeaturedSection from "@/components/home/featured-section";
 import MarketSection from "@/components/home/market-section";
-import { getFeaturedProperties, getMarketProperties } from "@/lib/properties";
+import {
+  FEATURED_PROPERTIES_LIMIT,
+  getFeaturedProperties,
+  getMarketProperties,
+  hasActiveFilters,
+} from "@/lib/properties";
 import { ListingType, PropertyFilters } from "@/types/property";
 
 // In Next.js with cacheComponents enabled, `instant = false` tells Next.js
@@ -63,8 +68,10 @@ export default async function Home({ searchParams }: HomeProps) {
     page: pageNumber,
   };
 
+  const isFiltering = hasActiveFilters(filters);
+
   const [featuredProperties, paginatedMarket] = await Promise.all([
-    getFeaturedProperties(),
+    isFiltering ? Promise.resolve([]) : getFeaturedProperties(),
     getMarketProperties(filters),
   ]);
 
@@ -73,7 +80,11 @@ export default async function Home({ searchParams }: HomeProps) {
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 flex-grow w-full">
         <HeroSearch filters={filters} />
-        <FeaturedSection properties={featuredProperties} />
+        {!isFiltering && featuredProperties.length > 0 && (
+          <FeaturedSection
+            properties={featuredProperties.slice(0, FEATURED_PROPERTIES_LIMIT)}
+          />
+        )}
         <MarketSection
           properties={paginatedMarket.properties}
           currentPage={paginatedMarket.currentPage}
