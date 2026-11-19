@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { PropertyAgent } from "@/types/property";
+import { format } from "@/i18n/format";
+import { getDictionary } from "@/i18n/get-dictionary";
 import PropertyMap from "./property-map";
 
 interface PropertySidebarProps {
@@ -12,7 +14,7 @@ interface PropertySidebarProps {
   longitude: number;
 }
 
-export default function PropertySidebar({
+export default async function PropertySidebar({
   title,
   price,
   period,
@@ -21,6 +23,8 @@ export default function PropertySidebar({
   latitude,
   longitude,
 }: PropertySidebarProps) {
+  const dict = await getDictionary();
+
   return (
     <div className="sticky top-28 space-y-6">
       {/* Main Pricing & Agent Card */}
@@ -67,14 +71,14 @@ export default function PropertySidebar({
           <div className="ml-auto flex gap-2">
             <button
               type="button"
-              aria-label={`Chat with ${agent.name}`}
+              aria-label={format(dict.property.chatWith, { name: agent.name })}
               className="p-2 rounded-full bg-[#006655]/10 text-[#006655] hover:bg-[#006655] hover:text-white transition-colors cursor-pointer"
             >
               <span className="material-icons text-sm leading-none">chat</span>
             </button>
             <button
               type="button"
-              aria-label={`Call ${agent.name}`}
+              aria-label={format(dict.property.call, { name: agent.name })}
               className="p-2 rounded-full bg-[#006655]/10 text-[#006655] hover:bg-[#006655] hover:text-white transition-colors cursor-pointer"
             >
               <span className="material-icons text-sm leading-none">call</span>
@@ -91,7 +95,7 @@ export default function PropertySidebar({
             <span className="material-icons text-xl leading-none group-hover:scale-110 transition-transform">
               calendar_today
             </span>
-            Schedule Visit
+            {dict.property.scheduleVisit}
           </button>
           <button
             type="button"
@@ -100,7 +104,7 @@ export default function PropertySidebar({
             <span className="material-icons text-xl leading-none">
               mail_outline
             </span>
-            Contact Agent
+            {dict.property.contactAgent}
           </button>
         </div>
       </div>

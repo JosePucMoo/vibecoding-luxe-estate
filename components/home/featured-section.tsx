@@ -1,24 +1,34 @@
 import Link from "next/link";
 import { FeaturedProperty } from "@/types/property";
+import { getDictionary } from "@/i18n/get-dictionary";
 import FeaturedCard from "./featured-card";
 
 interface FeaturedSectionProps {
   properties: FeaturedProperty[];
 }
 
-export default function FeaturedSection({ properties }: FeaturedSectionProps) {
+export default async function FeaturedSection({
+  properties,
+}: FeaturedSectionProps) {
+  const dict = await getDictionary();
+
   return (
     <section className="mb-16">
       <div className="flex items-end justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-light text-[#19322F]">Featured Collections</h2>
-          <p className="text-[#5C706D] mt-1 text-sm">Curated properties for the discerning eye.</p>
+          <h2 className="text-2xl font-light text-[#19322F]">
+            {dict.featured.title}
+          </h2>
+          <p className="text-[#5C706D] mt-1 text-sm">
+            {dict.featured.subtitle}
+          </p>
         </div>
         <Link
           href="#"
           className="hidden sm:flex items-center gap-1 text-sm font-medium text-[#006655] hover:opacity-70 transition-opacity"
         >
-          View all <span className="material-icons text-sm leading-none">arrow_forward</span>
+          {dict.featured.viewAll}{" "}
+          <span className="material-icons text-sm leading-none">arrow_forward</span>
         </Link>
       </div>
 

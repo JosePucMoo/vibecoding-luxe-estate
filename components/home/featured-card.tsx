@@ -1,17 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FeaturedProperty } from "@/types/property";
+import { localePath } from "@/i18n/config";
+import { format } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 
 interface FeaturedCardProps {
   property: FeaturedProperty;
 }
 
-export default function FeaturedCard({ property }: FeaturedCardProps) {
+export default async function FeaturedCard({ property }: FeaturedCardProps) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
   return (
     <article className="group relative rounded-xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] bg-white cursor-pointer transition-all duration-300">
       <Link
-        href={`/properties/${property.slug}`}
-        aria-label={`View details for ${property.title}`}
+        href={localePath(locale, `/properties/${property.slug}`)}
+        aria-label={format(dict.card.viewDetails, { title: property.title })}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#006655] rounded-xl"
       >
         {/* Property Image Container */}
@@ -25,7 +29,7 @@ export default function FeaturedCard({ property }: FeaturedCardProps) {
           />
           {/* Badge */}
           <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-[#19322F]">
-            {property.badge}
+            {property.badge || dict.featured.defaultBadge}
           </div>
           {/* Gradient shadow */}
           <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-60 pointer-events-none" />
@@ -52,11 +56,11 @@ export default function FeaturedCard({ property }: FeaturedCardProps) {
           <div className="flex items-center gap-6 mt-6 pt-6 border-t border-[#19322F]/10">
             <div className="flex items-center gap-2 text-[#5C706D] text-sm">
               <span className="material-icons text-lg leading-none">king_bed</span>{" "}
-              {property.beds} Beds
+              {format(dict.featured.beds, { count: property.beds })}
             </div>
             <div className="flex items-center gap-2 text-[#5C706D] text-sm">
               <span className="material-icons text-lg leading-none">bathtub</span>{" "}
-              {property.baths} Baths
+              {format(dict.featured.baths, { count: property.baths })}
             </div>
             <div className="flex items-center gap-2 text-[#5C706D] text-sm">
               <span className="material-icons text-lg leading-none">
@@ -71,7 +75,7 @@ export default function FeaturedCard({ property }: FeaturedCardProps) {
       {/* Favorite Button */}
       <button
         type="button"
-        aria-label="Save property"
+        aria-label={dict.card.saveProperty}
         className="absolute top-4 right-4 z-20 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#19322F] hover:bg-[#006655] hover:text-white transition-all shadow-sm"
       >
         <span className="material-icons text-xl leading-none">

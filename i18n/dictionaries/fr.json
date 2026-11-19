@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "LuxeEstate - Immobilier Premium",
+    "description": "Trouvez votre havre de paix. Des biens de luxe sélectionnés pour les regards les plus exigeants.",
+    "propertyNotFoundTitle": "Bien introuvable | LuxeEstate",
+    "propertyNotFoundDescription": "Le bien de luxe demandé est introuvable.",
+    "propertyTitle": "{title} ({beds} ch.) à {location} | {price} - LuxeEstate",
+    "propertyDescription": "Découvrez {title} à {location}. {beds} chambres, {baths} salles de bain, {area}. Proposé à {price}."
+  },
+  "nav": {
+    "homeAriaLabel": "Accueil LuxeEstate",
+    "buy": "Acheter",
+    "rent": "Louer",
+    "sell": "Vendre",
+    "saved": "Biens enregistrés",
+    "search": "Rechercher",
+    "notifications": "Notifications",
+    "profile": "Profil",
+    "profileImageAlt": "Portrait souriant de l'utilisateur"
+  },
+  "language": {
+    "label": "Langue",
+    "switchTo": "Changer de langue"
+  },
+  "hero": {
+    "titlePrefix": "Trouvez votre",
+    "titleHighlight": "havre de paix",
+    "titleSuffix": ".",
+    "placeholder": "Rechercher par ville, quartier ou adresse...",
+    "search": "Rechercher",
+    "searching": "Recherche...",
+    "filters": "Filtres"
+  },
+  "categories": {
+    "All": "Tous",
+    "House": "Maison",
+    "Apartment": "Appartement",
+    "Villa": "Villa",
+    "Penthouse": "Penthouse"
+  },
+  "propertyTypes": {
+    "Any Type": "Tous types",
+    "House": "Maison",
+    "Apartment": "Appartement",
+    "Villa": "Villa",
+    "Penthouse": "Penthouse",
+    "Condo": "Copropriété",
+    "Townhouse": "Maison de ville"
+  },
+  "listingTypes": {
+    "FOR SALE": "À VENDRE",
+    "FOR RENT": "À LOUER"
+  },
+  "amenities": {
+    "Swimming Pool": "Piscine",
+    "Gym": "Salle de sport",
+    "Parking": "Parking",
+    "Air Conditioning": "Climatisation",
+    "High-speed Wifi": "Wifi haut débit",
+    "Patio / Terrace": "Patio / Terrasse",
+    "Smart Home System": "Système domotique",
+    "Wine Cellar": "Cave à vin"
+  },
+  "filters": {
+    "title": "Filtres",
+    "close": "Fermer les filtres",
+    "location": "Localisation",
+    "locationPlaceholder": "Ville, quartier ou adresse",
+    "priceRange": "Fourchette de prix",
+    "minPrice": "Prix minimum",
+    "maxPrice": "Prix maximum",
+    "minPriceHandle": "Curseur du prix minimum",
+    "maxPriceHandle": "Curseur du prix maximum",
+    "propertyType": "Type de bien",
+    "bedrooms": "Chambres",
+    "bathrooms": "Salles de bain",
+    "decreaseBedrooms": "Diminuer les chambres",
+    "increaseBedrooms": "Augmenter les chambres",
+    "decreaseBathrooms": "Diminuer les salles de bain",
+    "increaseBathrooms": "Augmenter les salles de bain",
+    "any": "Indifférent",
+    "amenities": "Équipements et caractéristiques",
+    "clearAll": "Effacer tous les filtres",
+    "showHomes": "Afficher les biens",
+    "showHomes_one": "Afficher {count} bien",
+    "showHomes_other": "Afficher {count} biens"
+  },
+  "market": {
+    "searchResults": "Résultats de recherche",
+    "newInMarket": "Nouveautés du marché",
+    "found_one": "{count} bien correspond à vos critères.",
+    "found_other": "{count} biens correspondent à vos critères.",
+    "freshOpportunities": "De nouvelles opportunités ajoutées cette semaine.",
+    "clearAllFilters": "Effacer tous les filtres",
+    "tabAll": "Tous",
+    "tabBuy": "Acheter",
+    "tabRent": "Louer",
+    "emptyFiltered": "Aucun bien ne correspond à vos filtres actuels.",
+    "emptyPage": "Aucun bien trouvé pour cette page.",
+    "returnToFirstPage": "Retour à la première page",
+    "paginationLabel": "Pagination des biens du marché",
+    "showingPage": "Page {current} sur {total} ({count} au total)",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "featured": {
+    "title": "Collections à la une",
+    "subtitle": "Des biens sélectionnés pour les regards les plus exigeants.",
+    "viewAll": "Tout voir",
+    "defaultBadge": "Exclusif",
+    "beds": "{count} ch.",
+    "baths": "{count} sdb"
+  },
+  "card": {
+    "viewDetails": "Voir les détails de {title}",
+    "saveProperty": "Enregistrer le bien"
+  },
+  "property": {
+    "scheduleVisit": "Planifier une visite",
+    "contactAgent": "Contacter l'agent",
+    "chatWith": "Discuter avec {name}",
+    "call": "Appeler {name}",
+    "featuresTitle": "Caractéristiques du bien",
+    "squareMeters": "Mètres carrés",
+    "bedrooms": "Chambres",
+    "bathrooms": "Salles de bain",
+    "garage": "Garage",
+    "aboutTitle": "À propos de ce bien",
+    "readMore": "Lire la suite",
+    "readLess": "Lire moins",
+    "amenitiesTitle": "Équipements",
+    "estimatedPayment": "Mensualité estimée",
+    "startingFrom": "À partir de {payment} avec 20 % d'apport",
+    "calculateMortgage": "Calculer le prêt",
+    "viewOnMap": "Voir sur la carte",
+    "mapAriaLabel": "Carte indiquant l'emplacement de {title} à {location}"
+  },
+  "gallery": {
+    "viewAllPhotos": "Voir toutes les photos",
+    "viewPhoto": "Voir la photo {index} : {alt}",
+    "photoGallery": "Galerie photo de {title}",
+    "close": "Fermer la galerie",
+    "previous": "Photo précédente",
+    "next": "Photo suivante"
+  },
+  "notFound": {
+    "title": "Bien introuvable",
+    "description": "Nous n'avons pas trouvé le bien que vous recherchez. Il a peut-être été vendu ou retiré de nos annonces actives.",
+    "backHome": "Retour à l'accueil"
+  },
+  "footer": {
+    "rights": "© 2023 LuxeEstate Inc. Tous droits réservés.",
+    "facebook": "Facebook",
+    "twitter": "Twitter"
+  }
+}

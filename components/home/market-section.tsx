@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { buildFilterHref } from "@/lib/filter-url";
 import { hasActiveFilters } from "@/lib/properties";
+import { localePath } from "@/i18n/config";
+import { format, plural } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { ListingType, MarketProperty, PropertyFilters } from "@/types/property";
 import PropertyCard from "./property-card";
 
@@ -12,20 +15,25 @@ interface MarketSectionProps {
   filters?: PropertyFilters;
 }
 
-const LISTING_TABS: { label: string; value?: ListingType }[] = [
-  { label: "All", value: undefined },
-  { label: "Buy", value: "FOR SALE" },
-  { label: "Rent", value: "FOR RENT" },
+const LISTING_TABS: {
+  key: "tabAll" | "tabBuy" | "tabRent";
+  value?: ListingType;
+}[] = [
+  { key: "tabAll", value: undefined },
+  { key: "tabBuy", value: "FOR SALE" },
+  { key: "tabRent", value: "FOR RENT" },
 ];
 
-export default function MarketSection({
+export default async function MarketSection({
   properties,
   currentPage,
   totalPages,
   total,
   filters = {},
 }: MarketSectionProps) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
   const filteringActive = hasActiveFilters(filters);
+  const home = localePath(locale, "/");
 
   return (
     <section>
@@ -33,21 +41,21 @@ export default function MarketSection({
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
           <h2 className="text-2xl font-light text-[#19322F]">
-            {filteringActive ? "Search Results" : "New in Market"}
+            {filteringActive ? dict.market.searchResults : dict.market.newInMarket}
           </h2>
           <div className="flex flex-wrap items-center gap-3 mt-1">
             <p className="text-[#5C706D] text-sm">
               {filteringActive
-                ? `Found ${total} ${total === 1 ? "property" : "properties"} matching your criteria.`
-                : "Fresh opportunities added this week."}
+                ? plural(dict.market, "found", total, locale)
+                : dict.market.freshOpportunities}
             </p>
             {filteringActive && (
               <Link
-                href="/"
+                href={home}
                 scroll={false}
                 className="text-xs font-medium text-[#006655] hover:underline"
               >
-                Clear all filters
+                {dict.market.clearAllFilters}
               </Link>
             )}
           </div>
@@ -60,11 +68,11 @@ export default function MarketSection({
               ...filters,
               listingType: tab.value,
               page: 1,
-            });
+            }, locale);
 
             return (
               <Link
-                key={tab.label}
+                key={tab.key}
                 href={href}
                 scroll={false}
                 className={
@@ -73,7 +81,7 @@ export default function MarketSection({
                     : "px-4 py-1.5 rounded-md text-sm font-medium text-[#5C706D] hover:text-[#19322F] transition-colors"
                 }
               >
-                {tab.label}
+                {dict.market[tab.key]}
               </Link>
             );
           })}
@@ -85,15 +93,17 @@ export default function MarketSection({
         <div className="text-center py-16 bg-white rounded-xl border border-[#19322F]/5">
           <p className="text-[#5C706D] text-lg font-light">
             {filteringActive
-              ? "No properties match your current filters."
-              : "No properties found for this page."}
+              ? dict.market.emptyFiltered
+              : dict.market.emptyPage}
           </p>
           <Link
-            href="/"
+            href={home}
             scroll={false}
             className="inline-block mt-4 px-6 py-2 bg-[#19322F] text-white rounded-lg text-sm hover:bg-[#006655] transition-colors"
           >
-            {filteringActive ? "Clear all filters" : "Return to first page"}
+            {filteringActive
+              ? dict.market.clearAllFilters
+              : dict.market.returnToFirstPage}
           </Link>
         </div>
       ) : (
@@ -108,15 +118,15 @@ export default function MarketSection({
       {totalPages > 1 && (
         <div className="mt-14 flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-[#19322F]/10">
           <p className="text-sm text-[#5C706D]">
-            Showing page{" "}
-            <span className="font-semibold text-[#19322F]">{currentPage}</span>{" "}
-            of{" "}
-            <span className="font-semibold text-[#19322F]">{totalPages}</span>{" "}
-            <span className="text-[#5C706D]/80">({total} total)</span>
+            {format(dict.market.showingPage, {
+              current: currentPage,
+              total: totalPages,
+              count: total,
+            })}
           </p>
 
           <nav
-            aria-label="Market properties pagination"
+            aria-label={dict.market.paginationLabel}
             className="flex items-center gap-2"
           >
             {/* Previous Page Link */}
@@ -125,14 +135,14 @@ export default function MarketSection({
                 href={buildFilterHref({
                   ...filters,
                   page: currentPage - 1,
-                })}
+                }, locale)}
                 scroll={false}
                 className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#19322F] bg-white border border-[#19322F]/15 rounded-lg hover:border-[#006655] hover:text-[#006655] hover:shadow-sm transition-all"
               >
                 <span className="material-icons text-base leading-none">
                   chevron_left
                 </span>
-                Previous
+                {dict.market.previous}
               </Link>
             ) : (
               <span
@@ -142,7 +152,7 @@ export default function MarketSection({
                 <span className="material-icons text-base leading-none">
                   chevron_left
                 </span>
-                Previous
+                {dict.market.previous}
               </span>
             )}
 
@@ -154,7 +164,7 @@ export default function MarketSection({
                   const pageHref = buildFilterHref({
                     ...filters,
                     page: pageNumber,
-                  });
+                  }, locale);
 
                   return isActive ? (
                     <span
@@ -184,11 +194,11 @@ export default function MarketSection({
                 href={buildFilterHref({
                   ...filters,
                   page: currentPage + 1,
-                })}
+                }, locale)}
                 scroll={false}
                 className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#19322F] bg-white border border-[#19322F]/15 rounded-lg hover:border-[#006655] hover:text-[#006655] hover:shadow-sm transition-all"
               >
-                Next
+                {dict.market.next}
                 <span className="material-icons text-base leading-none">
                   chevron_right
                 </span>
@@ -198,7 +208,7 @@ export default function MarketSection({
                 aria-disabled="true"
                 className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#5C706D]/40 bg-white/50 border border-[#19322F]/5 rounded-lg cursor-not-allowed select-none"
               >
-                Next
+                {dict.market.next}
                 <span className="material-icons text-base leading-none">
                   chevron_right
                 </span>

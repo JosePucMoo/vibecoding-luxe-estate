@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { format } from "@/i18n/format";
+import { useI18n } from "@/i18n/i18n-provider";
 
 interface PropertyMapClientProps {
   latitude: number;
@@ -17,6 +19,7 @@ export default function PropertyMapClient({
   title,
   location,
 }: PropertyMapClientProps) {
+  const { dict } = useI18n();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
@@ -75,7 +78,7 @@ export default function PropertyMapClient({
     <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 isolate">
       <div
         ref={mapContainerRef}
-        aria-label={`Map showing location of ${title} at ${location}`}
+        aria-label={format(dict.property.mapAriaLabel, { title, location })}
         className="w-full h-full z-0"
       />
       <a
@@ -84,7 +87,7 @@ export default function PropertyMapClient({
         rel="noopener noreferrer"
         className="absolute bottom-2 right-2 z-[400] bg-white/90 text-xs font-medium px-2 py-1 rounded shadow-sm text-[#19322F] hover:text-[#006655] transition-colors"
       >
-        View on Map
+        {dict.property.viewOnMap}
       </a>
     </div>
   );

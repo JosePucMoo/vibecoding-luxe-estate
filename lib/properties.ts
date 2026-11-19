@@ -111,7 +111,7 @@ function mapFeaturedProperty(row: FeaturedPropertyRow): FeaturedProperty {
     beds: row.beds,
     baths: formatBaths(row.baths),
     area: row.area,
-    badge: row.featured_badge || "Exclusive",
+    badge: row.featured_badge ?? "",
     imageUrl: primaryImage.url,
     imageAlt: primaryImage.alt,
     images: normalizedImages,

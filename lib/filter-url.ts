@@ -1,6 +1,10 @@
 import { PropertyFilters } from "@/types/property";
+import { localePath, type Locale } from "@/i18n/config";
 
-export function buildFilterHref(filters: PropertyFilters): string {
+export function buildFilterHref(
+  filters: PropertyFilters,
+  locale: Locale
+): string {
   const params = new URLSearchParams();
 
   if (filters.q && filters.q.trim()) {
@@ -45,5 +49,5 @@ export function buildFilterHref(filters: PropertyFilters): string {
   }
 
   const queryString = params.toString();
-  return queryString ? `/?${queryString}` : "/";
+  return localePath(locale, queryString ? `/?${queryString}` : "/");
 }

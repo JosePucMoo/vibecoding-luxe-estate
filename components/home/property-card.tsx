@@ -1,12 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MarketProperty } from "@/types/property";
+import { localePath } from "@/i18n/config";
+import { format, label } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 
 interface PropertyCardProps {
   property: MarketProperty;
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default async function PropertyCard({ property }: PropertyCardProps) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
   const isForSale = property.listingType === "FOR SALE";
 
   return (
@@ -16,8 +20,8 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       }`}
     >
       <Link
-        href={`/properties/${property.slug}`}
-        aria-label={`View details for ${property.title}`}
+        href={localePath(locale, `/properties/${property.slug}`)}
+        aria-label={format(dict.card.viewDetails, { title: property.title })}
         className="flex flex-col h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#006655] rounded-xl"
       >
         {/* Property Image Container */}
@@ -35,7 +39,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               isForSale ? "bg-[#19322F]/90" : "bg-[#006655]/90"
             }`}
           >
-            {property.listingType}
+            {label(dict.listingTypes, property.listingType)}
           </div>
         </div>
 
@@ -83,7 +87,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       {/* Favorite Button */}
       <button
         type="button"
-        aria-label="Save property"
+        aria-label={dict.card.saveProperty}
         className="absolute top-3 right-3 z-20 w-10 h-10 bg-white/90 rounded-full hover:bg-[#006655] hover:text-white transition-colors text-[#19322F] shadow-sm flex items-center justify-center"
       >
         <span className="material-icons text-lg leading-none">

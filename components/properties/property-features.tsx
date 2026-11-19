@@ -1,3 +1,5 @@
+import { getDictionary } from "@/i18n/get-dictionary";
+
 interface PropertyFeaturesProps {
   area: string;
   beds: number;
@@ -5,18 +7,19 @@ interface PropertyFeaturesProps {
   garage: number;
 }
 
-export default function PropertyFeatures({
+export default async function PropertyFeatures({
   area,
   beds,
   baths,
   garage,
 }: PropertyFeaturesProps) {
+  const dict = await getDictionary();
   const numericArea = area.replace(/\s*m²/i, "").trim();
 
   return (
     <div className="bg-white p-8 rounded-xl shadow-sm border border-[#006655]/5">
       <h2 className="text-lg font-semibold mb-6 text-[#19322F]">
-        Property Features
+        {dict.property.featuresTitle}
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         <div className="flex flex-col items-center justify-center p-4 bg-[#006655]/5 rounded-lg border border-[#006655]/10">
@@ -27,7 +30,7 @@ export default function PropertyFeatures({
             {numericArea}
           </span>
           <span className="text-xs uppercase tracking-wider text-[#19322F]/50 text-center">
-            Square Meters
+            {dict.property.squareMeters}
           </span>
         </div>
 
@@ -37,7 +40,7 @@ export default function PropertyFeatures({
           </span>
           <span className="text-xl font-bold text-[#19322F]">{beds}</span>
           <span className="text-xs uppercase tracking-wider text-[#19322F]/50 text-center">
-            Bedrooms
+            {dict.property.bedrooms}
           </span>
         </div>
 
@@ -47,7 +50,7 @@ export default function PropertyFeatures({
           </span>
           <span className="text-xl font-bold text-[#19322F]">{baths}</span>
           <span className="text-xs uppercase tracking-wider text-[#19322F]/50 text-center">
-            Bathrooms
+            {dict.property.bathrooms}
           </span>
         </div>
 
@@ -57,7 +60,7 @@ export default function PropertyFeatures({
           </span>
           <span className="text-xl font-bold text-[#19322F]">{garage}</span>
           <span className="text-xs uppercase tracking-wider text-[#19322F]/50 text-center">
-            Garage
+            {dict.property.garage}
           </span>
         </div>
       </div>

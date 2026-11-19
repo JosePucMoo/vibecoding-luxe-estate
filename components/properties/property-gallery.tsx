@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { PropertyImage } from "@/types/property";
+import { format } from "@/i18n/format";
+import { useI18n } from "@/i18n/i18n-provider";
 
 interface PropertyGalleryProps {
   images: PropertyImage[];
@@ -15,6 +17,7 @@ export default function PropertyGallery({
   badges,
   title,
 }: PropertyGalleryProps) {
+  const { dict } = useI18n();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
@@ -94,7 +97,7 @@ export default function PropertyGallery({
           className="absolute bottom-4 right-4 z-10 bg-white/90 hover:bg-white text-[#19322F] px-4 py-2 rounded-lg text-sm font-medium shadow-lg backdrop-blur transition-all flex items-center gap-2 cursor-pointer"
         >
           <span className="material-icons text-sm leading-none">grid_view</span>
-          View All Photos
+          {dict.gallery.viewAllPhotos}
         </button>
       </div>
 
@@ -108,7 +111,10 @@ export default function PropertyGallery({
               key={`${image.url}-${index}`}
               type="button"
               onClick={() => setSelectedIndex(index)}
-              aria-label={`View photo ${index + 1}: ${image.alt}`}
+              aria-label={format(dict.gallery.viewPhoto, {
+                index: index + 1,
+                alt: image.alt,
+              })}
               aria-current={isSelected ? "true" : undefined}
               className={`relative flex-none w-48 aspect-[4/3] rounded-lg overflow-hidden cursor-pointer snap-start bg-[#D9ECC8]/30 focus:outline-none ${
                 isSelected
@@ -133,7 +139,7 @@ export default function PropertyGallery({
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={`${title} photo gallery`}
+          aria-label={format(dict.gallery.photoGallery, { title })}
           className="fixed inset-0 z-50 bg-[#19322F]/95 backdrop-blur-md flex flex-col items-center justify-center p-4 sm:p-8"
         >
           <div className="w-full max-w-6xl flex items-center justify-between text-white mb-4">
@@ -143,7 +149,7 @@ export default function PropertyGallery({
             <button
               type="button"
               onClick={() => setIsLightboxOpen(false)}
-              aria-label="Close gallery"
+              aria-label={dict.gallery.close}
               className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
             >
               <span className="material-icons leading-none">close</span>
@@ -164,7 +170,7 @@ export default function PropertyGallery({
                 <button
                   type="button"
                   onClick={handlePrev}
-                  aria-label="Previous photo"
+                  aria-label={dict.gallery.previous}
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#19322F] flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer"
                 >
                   <span className="material-icons leading-none">
@@ -174,7 +180,7 @@ export default function PropertyGallery({
                 <button
                   type="button"
                   onClick={handleNext}
-                  aria-label="Next photo"
+                  aria-label={dict.gallery.next}
                   className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#19322F] flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer"
                 >
                   <span className="material-icons leading-none">

@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { countMatchingProperties } from "@/lib/properties";
+import { formatNumber, label, plural } from "@/i18n/format";
+import { useI18n } from "@/i18n/i18n-provider";
+import type { Locale } from "@/i18n/config";
 import { ListingType, PropertyFilters } from "@/types/property";
 
 const MAX_SLIDER_PRICE = 6500000;
@@ -32,8 +35,8 @@ interface FiltersModalProps {
   onApply: (filters: PropertyFilters) => void;
 }
 
-function formatNumberWithCommas(value: number): string {
-  return value.toLocaleString("en-US");
+function formatNumberWithCommas(value: number, locale: Locale): string {
+  return formatNumber(value, locale);
 }
 
 function formatCompactCurrency(value: number): string {
@@ -61,6 +64,7 @@ export default function FiltersModal({
   initialFilters,
   onApply,
 }: FiltersModalProps) {
+  const { locale, dict } = useI18n();
   const [location, setLocation] = useState(initialFilters.q ?? "");
   const [minPrice, setMinPrice] = useState<number>(
     initialFilters.minPrice ?? 0
@@ -69,10 +73,10 @@ export default function FiltersModal({
     initialFilters.maxPrice ?? MAX_SLIDER_PRICE
   );
   const [minPriceText, setMinPriceText] = useState<string>(
-    formatNumberWithCommas(initialFilters.minPrice ?? 0)
+    formatNumberWithCommas(initialFilters.minPrice ?? 0, locale)
   );
   const [maxPriceText, setMaxPriceText] = useState<string>(
-    formatNumberWithCommas(initialFilters.maxPrice ?? MAX_SLIDER_PRICE)
+    formatNumberWithCommas(initialFilters.maxPrice ?? MAX_SLIDER_PRICE, locale)
   );
   const [propertyType, setPropertyType] = useState<string>(() => {
     if (!initialFilters.type || initialFilters.type.toLowerCase() === "all") {
@@ -164,12 +168,12 @@ export default function FiltersModal({
         const clampedMin = Math.min(steppedValue, maxPrice - PRICE_STEP);
         const validMin = Math.max(0, clampedMin);
         setMinPrice(validMin);
-        setMinPriceText(formatNumberWithCommas(validMin));
+        setMinPriceText(formatNumberWithCommas(validMin, locale));
       } else {
         const clampedMax = Math.max(steppedValue, minPrice + PRICE_STEP);
         const validMax = Math.min(MAX_SLIDER_PRICE, clampedMax);
         setMaxPrice(validMax);
-        setMaxPriceText(formatNumberWithCommas(validMax));
+        setMaxPriceText(formatNumberWithCommas(validMax, locale));
       }
     };
 
@@ -183,7 +187,7 @@ export default function FiltersModal({
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [minPrice, maxPrice]);
+  }, [minPrice, maxPrice, locale]);
 
   const minPercent = Math.min(
     100,
@@ -201,7 +205,7 @@ export default function FiltersModal({
     setMinPriceText(
       parsed === 0 && e.target.value === ""
         ? ""
-        : formatNumberWithCommas(clamped)
+        : formatNumberWithCommas(clamped, locale)
     );
   };
 
@@ -211,18 +215,18 @@ export default function FiltersModal({
     setMaxPriceText(
       parsed === 0 && e.target.value === ""
         ? ""
-        : formatNumberWithCommas(parsed)
+        : formatNumberWithCommas(parsed, locale)
     );
   };
 
   const handleMinInputBlur = () => {
-    setMinPriceText(formatNumberWithCommas(minPrice));
+    setMinPriceText(formatNumberWithCommas(minPrice, locale));
   };
 
   const handleMaxInputBlur = () => {
     const validMax = Math.max(minPrice, maxPrice || MAX_SLIDER_PRICE);
     setMaxPrice(validMax);
-    setMaxPriceText(formatNumberWithCommas(validMax));
+    setMaxPriceText(formatNumberWithCommas(validMax, locale));
   };
 
   const toggleAmenity = (amenityLabel: string) => {
@@ -237,8 +241,8 @@ export default function FiltersModal({
     setLocation("");
     setMinPrice(0);
     setMaxPrice(MAX_SLIDER_PRICE);
-    setMinPriceText(formatNumberWithCommas(0));
-    setMaxPriceText(formatNumberWithCommas(MAX_SLIDER_PRICE));
+    setMinPriceText(formatNumberWithCommas(0, locale));
+    setMaxPriceText(formatNumberWithCommas(MAX_SLIDER_PRICE, locale));
     setPropertyType("Any Type");
     setBeds(0);
     setBaths(0);
@@ -281,12 +285,12 @@ export default function FiltersModal({
             id="filters-modal-title"
             className="text-2xl font-semibold tracking-tight text-[#19322F]"
           >
-            Filters
+            {dict.filters.title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close filters modal"
+            aria-label={dict.filters.close}
             className="p-2 rounded-full hover:bg-[#EEF6F6] transition-colors text-[#5C706D] hover:text-[#19322F] flex items-center justify-center"
           >
             <span className="material-icons">close</span>
@@ -301,7 +305,7 @@ export default function FiltersModal({
               htmlFor="filter-location-input"
               className="block text-xs font-semibold text-[#5C706D] uppercase tracking-wider mb-3"
             >
-              Location
+              {dict.filters.location}
             </label>
             <div className="relative group">
               <span className="material-icons absolute left-4 top-3.5 text-[#5C706D]/70 group-focus-within:text-[#006655] transition-colors">
@@ -312,7 +316,7 @@ export default function FiltersModal({
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="City, neighborhood, or address"
+                placeholder={dict.filters.locationPlaceholder}
                 className="w-full pl-12 pr-4 py-3 bg-[#EEF6F6] border border-transparent rounded-lg text-[#19322F] placeholder-[#5C706D]/60 focus:ring-2 focus:ring-[#006655] focus:border-[#006655]/30 focus:bg-white transition-all shadow-sm outline-none"
               />
             </div>
@@ -322,7 +326,7 @@ export default function FiltersModal({
           <section>
             <div className="flex justify-between items-end mb-4">
               <label className="block text-xs font-semibold text-[#5C706D] uppercase tracking-wider">
-                Price Range
+                {dict.filters.priceRange}
               </label>
               <span className="text-sm font-semibold text-[#006655]">
                 {formatCompactCurrency(minPrice)} –{" "}
@@ -348,7 +352,7 @@ export default function FiltersModal({
                 {/* Min Handle */}
                 <button
                   type="button"
-                  aria-label="Minimum price handle"
+                  aria-label={dict.filters.minPriceHandle}
                   onPointerDown={(e) => {
                     e.preventDefault();
                     activeThumbRef.current = "min";
@@ -360,7 +364,7 @@ export default function FiltersModal({
                 {/* Max Handle */}
                 <button
                   type="button"
-                  aria-label="Maximum price handle"
+                  aria-label={dict.filters.maxPriceHandle}
                   onPointerDown={(e) => {
                     e.preventDefault();
                     activeThumbRef.current = "max";
@@ -377,7 +381,7 @@ export default function FiltersModal({
                   htmlFor="filter-min-price"
                   className="block text-[10px] text-[#5C706D] uppercase font-semibold mb-1"
                 >
-                  Min Price
+                  {dict.filters.minPrice}
                 </label>
                 <div className="flex items-center">
                   <span className="text-[#5C706D] mr-1">$</span>
@@ -398,7 +402,7 @@ export default function FiltersModal({
                   htmlFor="filter-max-price"
                   className="block text-[10px] text-[#5C706D] uppercase font-semibold mb-1"
                 >
-                  Max Price
+                  {dict.filters.maxPrice}
                 </label>
                 <div className="flex items-center">
                   <span className="text-[#5C706D] mr-1">$</span>
@@ -424,7 +428,7 @@ export default function FiltersModal({
                 htmlFor="filter-property-type"
                 className="block text-xs font-semibold text-[#5C706D] uppercase tracking-wider"
               >
-                Property Type
+                {dict.filters.propertyType}
               </label>
               <div className="relative">
                 <select
@@ -435,7 +439,7 @@ export default function FiltersModal({
                 >
                   {PROPERTY_TYPE_OPTIONS.map((option) => (
                     <option key={option} value={option}>
-                      {option}
+                      {label(dict.propertyTypes, option)}
                     </option>
                   ))}
                 </select>
@@ -450,12 +454,12 @@ export default function FiltersModal({
               {/* Beds */}
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-[#19322F]">
-                  Bedrooms
+                  {dict.filters.bedrooms}
                 </span>
                 <div className="flex items-center space-x-3 bg-[#EEF6F6] border border-[#19322F]/5 rounded-full p-1">
                   <button
                     type="button"
-                    aria-label="Decrease bedrooms"
+                    aria-label={dict.filters.decreaseBedrooms}
                     disabled={beds <= 0}
                     onClick={() => setBeds((prev) => Math.max(0, prev - 1))}
                     className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[#5C706D] hover:text-[#006655] disabled:opacity-40 transition-colors"
@@ -463,11 +467,11 @@ export default function FiltersModal({
                     <span className="material-icons text-base">remove</span>
                   </button>
                   <span className="text-sm font-semibold w-7 text-center text-[#19322F]">
-                    {beds > 0 ? `${beds}+` : "Any"}
+                    {beds > 0 ? `${beds}+` : dict.filters.any}
                   </span>
                   <button
                     type="button"
-                    aria-label="Increase bedrooms"
+                    aria-label={dict.filters.increaseBedrooms}
                     onClick={() => setBeds((prev) => Math.min(6, prev + 1))}
                     className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[#006655] hover:bg-[#006655] hover:text-white transition-colors"
                   >
@@ -479,12 +483,12 @@ export default function FiltersModal({
               {/* Baths */}
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-[#19322F]">
-                  Bathrooms
+                  {dict.filters.bathrooms}
                 </span>
                 <div className="flex items-center space-x-3 bg-[#EEF6F6] border border-[#19322F]/5 rounded-full p-1">
                   <button
                     type="button"
-                    aria-label="Decrease bathrooms"
+                    aria-label={dict.filters.decreaseBathrooms}
                     disabled={baths <= 0}
                     onClick={() => setBaths((prev) => Math.max(0, prev - 1))}
                     className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[#5C706D] hover:text-[#006655] disabled:opacity-40 transition-colors"
@@ -492,11 +496,11 @@ export default function FiltersModal({
                     <span className="material-icons text-base">remove</span>
                   </button>
                   <span className="text-sm font-semibold w-7 text-center text-[#19322F]">
-                    {baths > 0 ? `${baths}+` : "Any"}
+                    {baths > 0 ? `${baths}+` : dict.filters.any}
                   </span>
                   <button
                     type="button"
-                    aria-label="Increase bathrooms"
+                    aria-label={dict.filters.increaseBathrooms}
                     onClick={() => setBaths((prev) => Math.min(6, prev + 1))}
                     className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[#006655] hover:bg-[#006655] hover:text-white transition-colors"
                   >
@@ -510,7 +514,7 @@ export default function FiltersModal({
           {/* Section 4: Amenities */}
           <section>
             <label className="block text-xs font-semibold text-[#5C706D] uppercase tracking-wider mb-4">
-              Amenities &amp; Features
+              {dict.filters.amenities}
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {AMENITY_OPTIONS.map((amenity) => {
@@ -543,7 +547,7 @@ export default function FiltersModal({
                       >
                         {amenity.icon}
                       </span>
-                      {amenity.label}
+                      {label(dict.amenities, amenity.label)}
                     </div>
                     {isSelected && (
                       <div className="absolute top-2 right-2 w-2 h-2 bg-[#006655] rounded-full opacity-100 transition-opacity" />
@@ -562,7 +566,7 @@ export default function FiltersModal({
             onClick={handleClearAll}
             className="text-sm font-medium text-[#5C706D] hover:text-[#19322F] transition-colors underline decoration-[#5C706D]/40 hover:decoration-[#19322F] underline-offset-4"
           >
-            Clear all filters
+            {dict.filters.clearAll}
           </button>
           <button
             type="button"
@@ -570,10 +574,8 @@ export default function FiltersModal({
             className="bg-[#006655] hover:bg-[#19322F] text-white px-8 py-3 rounded-lg font-medium shadow-lg shadow-[#006655]/25 hover:shadow-[#19322F]/25 transition-all flex items-center gap-2 transform active:scale-95"
           >
             {matchingCount === null
-              ? "Show Homes"
-              : `Show ${matchingCount} ${
-                  matchingCount === 1 ? "Home" : "Homes"
-                }`}
+              ? dict.filters.showHomes
+              : plural(dict.filters, "showHomes", matchingCount, locale)}
             <span className="material-icons text-sm">arrow_forward</span>
           </button>
         </footer>
