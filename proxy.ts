@@ -9,6 +9,7 @@ import {
   type Locale,
 } from "@/i18n/config";
 import { updateSession } from "@/lib/supabase/proxy";
+import { guardAdminRoute } from "@/lib/supabase/role-middleware";
 
 function saveLocale(response: NextResponse, locale: Locale) {
   response.cookies.set(LOCALE_COOKIE, locale, {
@@ -31,7 +32,9 @@ export async function proxy(request: NextRequest) {
   // On a first visit through a direct link we remember the locale, but never override
   // an explicit earlier choice (and skip prefetches).
   if (pathLocale) {
-    const response = await updateSession(request);
+    const session = await updateSession(request);
+    const denied = await guardAdminRoute(request, session, pathLocale);
+    const response = denied ?? session.response;
     if (!savedLocale && !request.headers.has("next-router-prefetch")) {
       saveLocale(response, pathLocale);
     }

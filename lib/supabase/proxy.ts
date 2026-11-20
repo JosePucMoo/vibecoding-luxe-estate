@@ -2,7 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseEnv } from "./config";
 
-/** Refreshes the Supabase session cookies and returns the response to continue with. */
+/**
+ * Refreshes the Supabase session cookies. Returns the response to continue with,
+ * the request-scoped client and the authenticated user id (null if signed out).
+ */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
   const { url, key } = getSupabaseEnv();
@@ -28,7 +31,10 @@ export async function updateSession(request: NextRequest) {
   });
 
   // Do not run code between createServerClient and getClaims().
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
+  const userId = data?.claims?.sub ?? null;
 
-  return supabaseResponse;
+  return { response: supabaseResponse, supabase, userId };
 }
+
+export type SessionContext = Awaited<ReturnType<typeof updateSession>>;

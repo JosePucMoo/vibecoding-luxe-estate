@@ -20,7 +20,8 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "accountMenu": "Account menu",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "adminDashboard": "Admin dashboard"
   },
   "auth": {
     "pageTitle": "LuxeEstate - Login",
@@ -173,5 +174,69 @@
     "rights": "© 2023 LuxeEstate Inc. All rights reserved.",
     "facebook": "Facebook",
     "twitter": "Twitter"
+  },
+  "admin": {
+    "search": "Search",
+    "nav": {
+      "properties": "Properties",
+      "users": "Users",
+      "viewSite": "View site"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "broker": "Broker",
+      "agent": "Agent",
+      "viewer": "Viewer"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "showing": "Showing {from} to {to} of {total} results",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "properties": {
+      "title": "Properties",
+      "subtitle": "Browse the current property portfolio.",
+      "searchPlaceholder": "Search by title, location or type...",
+      "filterAll": "All",
+      "statTotal": "Total properties",
+      "statSale": "For sale",
+      "statRent": "For rent",
+      "statFeatured": "Featured",
+      "colDetails": "Property details",
+      "colPrice": "Price",
+      "colType": "Type",
+      "colActions": "Actions",
+      "featured": "Featured",
+      "viewProperty": "View",
+      "empty": "No properties match your search.",
+      "beds": "{count} beds",
+      "baths": "{count} baths"
+    },
+    "users": {
+      "title": "User Directory",
+      "subtitle": "Manage user access and roles.",
+      "searchPlaceholder": "Search by name or email...",
+      "tabAll": "All users",
+      "colUser": "User details",
+      "colRole": "Role & status",
+      "colActivity": "Activity",
+      "colActions": "Actions",
+      "active": "Active",
+      "suspended": "Suspended",
+      "you": "You",
+      "changeRole": "Change role",
+      "saving": "Saving...",
+      "suspendUser": "Suspend user",
+      "reactivateUser": "Reactivate user",
+      "provider": "Provider",
+      "lastLogin": "Last login",
+      "never": "Never",
+      "empty": "No users match your search.",
+      "updated": "Changes saved.",
+      "errorGeneric": "The change could not be saved. Please try again.",
+      "errorSelf": "You cannot change your own role or suspend your account.",
+      "errorForbidden": "You do not have permission to perform this action."
+    }
   }
 }

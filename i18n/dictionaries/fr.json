@@ -20,7 +20,8 @@
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
     "accountMenu": "Menu du compte",
-    "signedInAs": "Connecté en tant que"
+    "signedInAs": "Connecté en tant que",
+    "adminDashboard": "Tableau de bord admin"
   },
   "auth": {
     "pageTitle": "LuxeEstate - Connexion",
@@ -173,5 +174,69 @@
     "rights": "© 2023 LuxeEstate Inc. Tous droits réservés.",
     "facebook": "Facebook",
     "twitter": "Twitter"
+  },
+  "admin": {
+    "search": "Rechercher",
+    "nav": {
+      "properties": "Propriétés",
+      "users": "Utilisateurs",
+      "viewSite": "Voir le site"
+    },
+    "roles": {
+      "admin": "Administrateur",
+      "broker": "Courtier",
+      "agent": "Agent",
+      "viewer": "Lecteur"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "showing": "Affichage de {from} à {to} sur {total} résultats",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "properties": {
+      "title": "Propriétés",
+      "subtitle": "Consultez le portefeuille actuel de propriétés.",
+      "searchPlaceholder": "Rechercher par titre, lieu ou type...",
+      "filterAll": "Toutes",
+      "statTotal": "Total des propriétés",
+      "statSale": "À vendre",
+      "statRent": "À louer",
+      "statFeatured": "En vedette",
+      "colDetails": "Détails de la propriété",
+      "colPrice": "Prix",
+      "colType": "Type",
+      "colActions": "Actions",
+      "featured": "En vedette",
+      "viewProperty": "Voir",
+      "empty": "Aucune propriété ne correspond à votre recherche.",
+      "beds": "{count} ch.",
+      "baths": "{count} sdb"
+    },
+    "users": {
+      "title": "Annuaire des utilisateurs",
+      "subtitle": "Gérez l'accès et les rôles des utilisateurs.",
+      "searchPlaceholder": "Rechercher par nom ou e-mail...",
+      "tabAll": "Tous",
+      "colUser": "Utilisateur",
+      "colRole": "Rôle et statut",
+      "colActivity": "Activité",
+      "colActions": "Actions",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "you": "Vous",
+      "changeRole": "Changer le rôle",
+      "saving": "Enregistrement...",
+      "suspendUser": "Suspendre l'utilisateur",
+      "reactivateUser": "Réactiver l'utilisateur",
+      "provider": "Fournisseur",
+      "lastLogin": "Dernière connexion",
+      "never": "Jamais",
+      "empty": "Aucun utilisateur ne correspond à votre recherche.",
+      "updated": "Modifications enregistrées.",
+      "errorGeneric": "Impossible d'enregistrer la modification. Veuillez réessayer.",
+      "errorSelf": "Vous ne pouvez pas modifier votre propre rôle ni suspendre votre compte.",
+      "errorForbidden": "Vous n'avez pas l'autorisation d'effectuer cette action."
+    }
   }
 }
