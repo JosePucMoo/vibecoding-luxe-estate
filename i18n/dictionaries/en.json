@@ -16,7 +16,28 @@
     "search": "Search",
     "notifications": "Notifications",
     "profile": "Profile",
-    "profileImageAlt": "User profile portrait smiling"
+    "profileImageAlt": "User profile portrait smiling",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "accountMenu": "Account menu",
+    "signedInAs": "Signed in as"
+  },
+  "auth": {
+    "pageTitle": "LuxeEstate - Login",
+    "welcomeTitle": "Welcome to LuxeEstate",
+    "welcomeSubtitle": "Unlock exclusive properties worldwide.",
+    "signUpSubtitle": "Create your account with one click.",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGitHub": "Continue with GitHub",
+    "connecting": "Connecting...",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "helpCenter": "Help Center",
+    "errorGeneric": "We could not sign you in. Please try again."
   },
   "language": {
     "label": "Language",

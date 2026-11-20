@@ -16,7 +16,28 @@
     "search": "Buscar",
     "notifications": "Notificaciones",
     "profile": "Perfil",
-    "profileImageAlt": "Retrato sonriente del usuario"
+    "profileImageAlt": "Retrato sonriente del usuario",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "accountMenu": "Menú de cuenta",
+    "signedInAs": "Sesión iniciada como"
+  },
+  "auth": {
+    "pageTitle": "LuxeEstate - Iniciar sesión",
+    "welcomeTitle": "Bienvenido a LuxeEstate",
+    "welcomeSubtitle": "Descubre propiedades exclusivas en todo el mundo.",
+    "signUpSubtitle": "Crea tu cuenta con un solo clic.",
+    "continueWithGoogle": "Continuar con Google",
+    "continueWithGitHub": "Continuar con GitHub",
+    "connecting": "Conectando...",
+    "noAccount": "¿No tienes una cuenta?",
+    "signUp": "Regístrate",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "signIn": "Inicia sesión",
+    "privacyPolicy": "Política de privacidad",
+    "termsOfService": "Términos del servicio",
+    "helpCenter": "Centro de ayuda",
+    "errorGeneric": "No pudimos iniciar tu sesión. Inténtalo de nuevo."
   },
   "language": {
     "label": "Idioma",

@@ -16,7 +16,28 @@
     "search": "Rechercher",
     "notifications": "Notifications",
     "profile": "Profil",
-    "profileImageAlt": "Portrait souriant de l'utilisateur"
+    "profileImageAlt": "Portrait souriant de l'utilisateur",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "accountMenu": "Menu du compte",
+    "signedInAs": "Connecté en tant que"
+  },
+  "auth": {
+    "pageTitle": "LuxeEstate - Connexion",
+    "welcomeTitle": "Bienvenue sur LuxeEstate",
+    "welcomeSubtitle": "Accédez à des biens exclusifs dans le monde entier.",
+    "signUpSubtitle": "Créez votre compte en un clic.",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithGitHub": "Continuer avec GitHub",
+    "connecting": "Connexion...",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signUp": "S'inscrire",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Se connecter",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "helpCenter": "Centre d'aide",
+    "errorGeneric": "Impossible de vous connecter. Veuillez réessayer."
   },
   "language": {
     "label": "Langue",

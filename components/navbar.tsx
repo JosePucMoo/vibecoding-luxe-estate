@@ -1,7 +1,8 @@
-import Image from "next/image";
+import { Suspense } from "react";
 import Link from "next/link";
 import { localePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
+import NavbarAuth from "./auth/navbar-auth";
 import LanguageSwitcher from "./language-switcher";
 
 export default async function Navbar() {
@@ -77,21 +78,16 @@ export default async function Navbar() {
               </span>
               <span className="absolute top-2 right-2 w-2 h-2 bg-[#006655] rounded-full" />
             </button>
-            <button
-              type="button"
-              aria-label={dict.nav.profile}
-              className="ml-2 flex items-center gap-2 p-1 rounded-full hover:bg-[#006655]/5 transition-colors"
-            >
-              <div className="w-9 h-9 rounded-full bg-[#006655]/10 overflow-hidden border border-[#006655]/20 relative">
-                <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWxbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"
-                  alt={dict.nav.profileImageAlt}
-                  width={36}
-                  height={36}
-                  className="w-full h-full object-cover"
+            <Suspense
+              fallback={
+                <div
+                  aria-hidden="true"
+                  className="ml-2 w-9 h-9 rounded-full bg-[#006655]/10 animate-pulse"
                 />
-              </div>
-            </button>
+              }
+            >
+              <NavbarAuth />
+            </Suspense>
           </div>
         </div>
       </div>

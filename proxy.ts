@@ -8,6 +8,7 @@ import {
   negotiateLocale,
   type Locale,
 } from "@/i18n/config";
+import { updateSession } from "@/lib/supabase/proxy";
 
 function saveLocale(response: NextResponse, locale: Locale) {
   response.cookies.set(LOCALE_COOKIE, locale, {
@@ -17,7 +18,7 @@ function saveLocale(response: NextResponse, locale: Locale) {
   });
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const cookieValue = request.cookies.get(LOCALE_COOKIE)?.value;
   const savedLocale = isLocale(cookieValue) ? cookieValue : undefined;
@@ -26,10 +27,11 @@ export function proxy(request: NextRequest) {
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
   );
 
-  // URL already has a locale: let it through. On a first visit through a direct link
-  // we remember it, but never override an explicit earlier choice (and skip prefetches).
+  // URL already has a locale: refresh the Supabase session and let it through.
+  // On a first visit through a direct link we remember the locale, but never override
+  // an explicit earlier choice (and skip prefetches).
   if (pathLocale) {
-    const response = NextResponse.next();
+    const response = await updateSession(request);
     if (!savedLocale && !request.headers.has("next-router-prefetch")) {
       saveLocale(response, pathLocale);
     }
@@ -51,6 +53,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals, API routes and any path with a file extension (favicon, images…).
-  matcher: ["/((?!_next|api|.*\\..*).*)"],
+  // Skip Next internals, API routes, auth route handlers and any path with a file extension.
+  matcher: ["/((?!_next|api|auth/|.*\\..*).*)"],
 };
