@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { localePath, localeMeta } from "@/i18n/config";
+import { localeMeta, localePath } from "@/i18n/config";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
-import { USER_ROLES, type AdminPage, type AdminUserProfile, type RoleCounts, type UserRole } from "@/types/admin";
+import type {
+  AdminPage,
+  AdminUserProfile,
+  RoleCounts,
+  UserRole,
+} from "@/types/admin";
 import AdminPagination from "./admin-pagination";
 import { adminHref } from "./admin-url";
 import UserRoleCard from "./user-role-card";
@@ -13,6 +18,8 @@ interface UserDirectoryProps {
   activeRole?: UserRole;
   q?: string;
 }
+
+const TAB_ROLES: UserRole[] = ["agent", "broker", "admin", "viewer"];
 
 export default async function UserDirectory({
   page,
@@ -30,62 +37,74 @@ export default async function UserDirectory({
 
   const tabs: { key: UserRole | "all"; label: string }[] = [
     { key: "all", label: dict.admin.users.tabAll },
-    ...USER_ROLES.map((role) => ({ key: role, label: dict.admin.roles[role] })),
+    ...TAB_ROLES.map((role) => ({ key: role, label: dict.admin.roles[role] })),
   ];
 
   return (
     <>
-      <div className="mb-6 flex gap-6 border-b border-nordic/10 overflow-x-auto">
+      <div className="mt-8 mb-6 flex gap-6 border-b border-nordic/10 overflow-x-auto">
         {tabs.map((tab) => {
           const active = (activeRole ?? "all") === tab.key;
           return (
             <Link
               key={tab.key}
-              href={adminHref(basePath, { q, role: tab.key === "all" ? undefined : tab.key })}
+              href={adminHref(basePath, {
+                q,
+                role: tab.key === "all" ? undefined : tab.key,
+              })}
               aria-current={active ? "page" : undefined}
-              className={`pb-3 text-sm whitespace-nowrap border-b-2 transition-colors ${
+              className={`pb-3 text-sm whitespace-nowrap transition-colors ${
                 active
-                  ? "font-semibold text-mosque border-mosque"
-                  : "font-medium text-nordic/60 border-transparent hover:text-nordic"
+                  ? "font-semibold text-mosque border-b-2 border-mosque"
+                  : "font-medium text-nordic/60 hover:text-nordic"
               }`}
             >
-              {tab.label} <span className="text-xs text-nordic/40">({counts[tab.key]})</span>
+              {tab.label}{" "}
+              <span className="text-xs opacity-60">({counts[tab.key]})</span>
             </Link>
           );
         })}
       </div>
 
       <div className="space-y-4">
-        <div className="hidden md:grid grid-cols-12 gap-4 px-6 text-xs font-semibold uppercase tracking-wider text-nordic/50">
+        <div className="hidden md:grid grid-cols-12 gap-4 px-6 text-xs font-semibold uppercase tracking-wider text-nordic/50 mb-2">
           <div className="col-span-4">{dict.admin.users.colUser}</div>
           <div className="col-span-3">{dict.admin.users.colRole}</div>
           <div className="col-span-3">{dict.admin.users.colActivity}</div>
-          <div className="col-span-2 text-right">{dict.admin.users.colActions}</div>
+          <div className="col-span-2 text-right">
+            {dict.admin.users.colActions}
+          </div>
         </div>
 
         {page.items.length === 0 ? (
-          <p className="py-12 text-center text-sm text-nordic/60">{dict.admin.users.empty}</p>
+          <p className="py-12 text-center text-sm text-nordic/60">
+            {dict.admin.users.empty}
+          </p>
         ) : (
           page.items.map((user) => (
             <UserRoleCard
               key={user.id}
               user={user}
               isSelf={user.id === currentUserId}
-              lastLoginLabel={user.lastSignInAt ? dateFormat.format(new Date(user.lastSignInAt)) : null}
+              lastLoginLabel={
+                user.lastSignInAt
+                  ? dateFormat.format(new Date(user.lastSignInAt))
+                  : null
+              }
             />
           ))
         )}
       </div>
 
-      <div className="mt-6">
-        <AdminPagination
-          basePath={basePath}
-          params={{ q, role: activeRole }}
-          currentPage={page.currentPage}
-          totalPages={page.totalPages}
-          total={page.total}
-        />
-      </div>
+      <AdminPagination
+        basePath={basePath}
+        params={{ q, role: activeRole }}
+        currentPage={page.currentPage}
+        totalPages={page.totalPages}
+        total={page.total}
+        variant="numbered"
+        entity="users"
+      />
     </>
   );
 }

@@ -13,7 +13,7 @@ import {
 } from "@/types/admin";
 import type { ListingType, PropertyImage } from "@/types/property";
 
-export const ADMIN_PAGE_SIZE = 8;
+export const ADMIN_PAGE_SIZE = 5;
 
 const FALLBACK_IMAGE =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBjNDU9iE4zwPuWeg-CjIrLI-87GF24_LgOggcXT0vmUYfMx2q1dJAheiqWqVN-39uiwyLKEfP18FsG1vtUyAPX902OhGEfM4clcQiDsJW7MBbc_BoMtZXtqIeFKIfkHnkIPwmFbQg8Eaan6ULV99T8AUVUuKsro0HoTMrIaxw5pp1uSuQlF8X5Dait4US1W4vmyZnVioXbFnCoaOOZ0LPorb0rVGAIQd9reWcpqq27C0oO4ltnsCTHIcjIm0xp-2qVbRJSIZzWPv0";
@@ -23,10 +23,10 @@ function sanitizeSearch(q?: string): string {
   return (q ?? "").trim().replace(/[,()%*\\]/g, " ").trim();
 }
 
-function pageRange(page: number) {
+function pageRange(page: number, pageSize = ADMIN_PAGE_SIZE) {
   const current = Math.max(1, Math.floor(page) || 1);
-  const from = (current - 1) * ADMIN_PAGE_SIZE;
-  return { current, from, to: from + ADMIN_PAGE_SIZE - 1 };
+  const from = (current - 1) * pageSize;
+  return { current, from, to: from + pageSize - 1, pageSize };
 }
 
 interface PropertyRow {

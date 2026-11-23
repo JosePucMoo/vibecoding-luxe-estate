@@ -192,26 +192,34 @@
       "label": "Pagination",
       "showing": "Affichage de {from} à {to} sur {total} résultats",
       "previous": "Précédent",
-      "next": "Suivant"
+      "next": "Suivant",
+      "showingUsers": "Affichage de {from} à {to} sur {total} utilisateurs"
     },
     "properties": {
       "title": "Propriétés",
       "subtitle": "Consultez le portefeuille actuel de propriétés.",
       "searchPlaceholder": "Rechercher par titre, lieu ou type...",
       "filterAll": "Toutes",
-      "statTotal": "Total des propriétés",
-      "statSale": "À vendre",
-      "statRent": "À louer",
+      "filterSale": "À vendre",
+      "filterRent": "À louer",
+      "statTotal": "Total des annonces",
+      "statSale": "Propriétés actives",
+      "statRent": "Vente en attente",
       "statFeatured": "En vedette",
       "colDetails": "Détails de la propriété",
       "colPrice": "Prix",
-      "colType": "Type",
+      "colType": "Statut",
       "colActions": "Actions",
       "featured": "En vedette",
       "viewProperty": "Voir",
       "empty": "Aucune propriété ne correspond à votre recherche.",
       "beds": "{count} ch.",
-      "baths": "{count} sdb"
+      "baths": "{count} sdb",
+      "filter": "Filtrer",
+      "addProperty": "Ajouter une propriété",
+      "clearFilters": "Effacer",
+      "editProperty": "Modifier la propriété",
+      "deleteProperty": "Supprimer la propriété"
     },
     "users": {
       "title": "Annuaire des utilisateurs",
@@ -236,7 +244,10 @@
       "updated": "Modifications enregistrées.",
       "errorGeneric": "Impossible d'enregistrer la modification. Veuillez réessayer.",
       "errorSelf": "Vous ne pouvez pas modifier votre propre rôle ni suspendre votre compte.",
-      "errorForbidden": "Vous n'avez pas l'autorisation d'effectuer cette action."
-    }
+      "errorForbidden": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+      "addUser": "Ajouter un utilisateur"
+    },
+    "comingSoon": "Bientôt disponible",
+    "footerRights": "© 2026 LuxeEstate Property Management. Tous droits réservés."
   }
 }

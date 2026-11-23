@@ -192,26 +192,34 @@
       "label": "Pagination",
       "showing": "Showing {from} to {to} of {total} results",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "showingUsers": "Showing {from} to {to} of {total} users"
     },
     "properties": {
       "title": "Properties",
       "subtitle": "Browse the current property portfolio.",
       "searchPlaceholder": "Search by title, location or type...",
       "filterAll": "All",
-      "statTotal": "Total properties",
-      "statSale": "For sale",
-      "statRent": "For rent",
+      "filterSale": "For Sale",
+      "filterRent": "For Rent",
+      "statTotal": "Total Listings",
+      "statSale": "Active Properties",
+      "statRent": "Pending Sale",
       "statFeatured": "Featured",
       "colDetails": "Property details",
       "colPrice": "Price",
-      "colType": "Type",
+      "colType": "Status",
       "colActions": "Actions",
       "featured": "Featured",
       "viewProperty": "View",
       "empty": "No properties match your search.",
       "beds": "{count} beds",
-      "baths": "{count} baths"
+      "baths": "{count} baths",
+      "filter": "Filter",
+      "addProperty": "Add New Property",
+      "clearFilters": "Clear",
+      "editProperty": "Edit Property",
+      "deleteProperty": "Delete Property"
     },
     "users": {
       "title": "User Directory",
@@ -236,7 +244,10 @@
       "updated": "Changes saved.",
       "errorGeneric": "The change could not be saved. Please try again.",
       "errorSelf": "You cannot change your own role or suspend your account.",
-      "errorForbidden": "You do not have permission to perform this action."
-    }
+      "errorForbidden": "You do not have permission to perform this action.",
+      "addUser": "Add User"
+    },
+    "comingSoon": "Coming soon",
+    "footerRights": "© 2026 LuxeEstate Property Management. All rights reserved."
   }
 }

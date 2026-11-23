@@ -102,7 +102,7 @@ export default function NavbarUserMenu({ user }: { user: NavUser | null }) {
           </div>
           {user.role === "admin" && user.status === "active" && (
             <Link
-              href={localePath(locale, "/admin")}
+              href={localePath(locale, "/admin/properties")}
               role="menuitem"
               onClick={() => setIsOpen(false)}
               className="w-full flex items-center gap-2 px-4 py-2 text-sm text-left text-[#19322F] hover:bg-[#EEF6F6] transition-colors"

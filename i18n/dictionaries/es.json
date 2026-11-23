@@ -192,26 +192,34 @@
       "label": "Paginación",
       "showing": "Mostrando {from} a {to} de {total} resultados",
       "previous": "Anterior",
-      "next": "Siguiente"
+      "next": "Siguiente",
+      "showingUsers": "Mostrando {from} a {to} de {total} usuarios"
     },
     "properties": {
       "title": "Propiedades",
       "subtitle": "Consulta el portafolio actual de propiedades.",
       "searchPlaceholder": "Buscar por título, ubicación o tipo...",
       "filterAll": "Todas",
-      "statTotal": "Total de propiedades",
-      "statSale": "En venta",
-      "statRent": "En alquiler",
+      "filterSale": "En venta",
+      "filterRent": "En alquiler",
+      "statTotal": "Total de anuncios",
+      "statSale": "Propiedades activas",
+      "statRent": "Venta pendiente",
       "statFeatured": "Destacadas",
       "colDetails": "Detalles de la propiedad",
       "colPrice": "Precio",
-      "colType": "Tipo",
+      "colType": "Estado",
       "colActions": "Acciones",
       "featured": "Destacada",
       "viewProperty": "Ver",
       "empty": "No hay propiedades que coincidan con tu búsqueda.",
       "beds": "{count} hab.",
-      "baths": "{count} baños"
+      "baths": "{count} baños",
+      "filter": "Filtrar",
+      "addProperty": "Agregar propiedad",
+      "clearFilters": "Limpiar",
+      "editProperty": "Editar propiedad",
+      "deleteProperty": "Eliminar propiedad"
     },
     "users": {
       "title": "Directorio de usuarios",
@@ -236,7 +244,10 @@
       "updated": "Cambios guardados.",
       "errorGeneric": "No se pudo guardar el cambio. Inténtalo de nuevo.",
       "errorSelf": "No puedes cambiar tu propio rol ni suspender tu cuenta.",
-      "errorForbidden": "No tienes permisos para realizar esta acción."
-    }
+      "errorForbidden": "No tienes permisos para realizar esta acción.",
+      "addUser": "Agregar usuario"
+    },
+    "comingSoon": "Próximamente",
+    "footerRights": "© 2026 LuxeEstate Property Management. Todos los derechos reservados."
   }
 }
