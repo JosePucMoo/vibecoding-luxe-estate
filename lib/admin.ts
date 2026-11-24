@@ -1,11 +1,14 @@
-import { supabase } from "./supabase";
 import { createClient } from "./supabase/server";
 import {
   USER_ROLES,
+  isListingType,
+  isPropertyStatus,
+  isPropertyType,
   isUserRole,
   isUserStatus,
   type AdminPage,
   type AdminProperty,
+  type AdminPropertyRecord,
   type AdminPropertyStats,
   type AdminUserProfile,
   type RoleCounts,
@@ -38,10 +41,41 @@ interface PropertyRow {
   period: string | null;
   listing_type: ListingType;
   property_type: string;
+  status: string;
   beds: number;
   baths: number | string;
   area: string;
   is_featured: boolean;
+  estimated_payment: string | null;
+  images: PropertyImage[] | null;
+}
+
+interface AdminPropertyDetailRow {
+  id: string;
+  slug: string;
+  title: string;
+  location: string;
+  price: string;
+  price_value: number | string | null;
+  period: string | null;
+  listing_type: string;
+  property_type: string;
+  status: string;
+  beds: number;
+  baths: number | string;
+  area: string;
+  year_built: number | null;
+  garage: number | null;
+  description: string[] | null;
+  amenities: string[] | null;
+  badges: string[] | null;
+  is_featured: boolean;
+  featured_badge: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  agent_name: string | null;
+  agent_role: string | null;
+  agent_image: string | null;
   estimated_payment: string | null;
   images: PropertyImage[] | null;
 }
@@ -51,12 +85,13 @@ export async function getAdminProperties(opts: {
   listingType?: ListingType;
   page?: number;
 }): Promise<AdminPage<AdminProperty>> {
+  const client = await createClient();
   const { current, from, to } = pageRange(opts.page ?? 1);
 
-  let query = supabase
+  let query = client
     .from("properties")
     .select(
-      "id, slug, title, location, price, period, listing_type, property_type, beds, baths, area, is_featured, estimated_payment, images",
+      "id, slug, title, location, price, period, listing_type, property_type, status, beds, baths, area, is_featured, estimated_payment, images",
       { count: "exact" }
     );
 
@@ -88,6 +123,7 @@ export async function getAdminProperties(opts: {
         period: row.period ?? undefined,
         listingType: row.listing_type,
         propertyType: row.property_type,
+        status: isPropertyStatus(row.status) ? row.status : "published",
         beds: row.beds,
         baths: row.baths,
         area: row.area,
@@ -103,17 +139,17 @@ export async function getAdminProperties(opts: {
   };
 }
 
-const countBase = () =>
-  supabase.from("properties").select("id", { count: "exact", head: true });
-
-async function countProperties(
-  apply?: (q: ReturnType<typeof countBase>) => ReturnType<typeof countBase>
-) {
-  const { count } = await (apply ? apply(countBase()) : countBase());
-  return count ?? 0;
-}
-
 export async function getAdminPropertyStats(): Promise<AdminPropertyStats> {
+  const client = await createClient();
+  const countBase = () =>
+    client.from("properties").select("id", { count: "exact", head: true });
+  const countProperties = async (
+    apply?: (q: ReturnType<typeof countBase>) => ReturnType<typeof countBase>
+  ) => {
+    const { count } = await (apply ? apply(countBase()) : countBase());
+    return count ?? 0;
+  };
+
   const [total, forSale, forRent, featured] = await Promise.all([
     countProperties(),
     countProperties((q) => q.eq("listing_type", "FOR SALE")),
@@ -121,6 +157,72 @@ export async function getAdminPropertyStats(): Promise<AdminPropertyStats> {
     countProperties((q) => q.eq("is_featured", true)),
   ]);
   return { total, forSale, forRent, featured };
+}
+
+export async function getAdminPropertyById(
+  id: string
+): Promise<AdminPropertyRecord | null> {
+  const trimmedId = id.trim();
+  if (!trimmedId) return null;
+
+  const client = await createClient();
+  const { data, error } = await client
+    .from("properties")
+    .select(
+      "id, slug, title, location, price, price_value, period, listing_type, property_type, status, beds, baths, area, year_built, garage, description, amenities, badges, is_featured, featured_badge, latitude, longitude, agent_name, agent_role, agent_image, estimated_payment, images"
+    )
+    .eq("id", trimmedId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to fetch property "${trimmedId}": ${error.message}`);
+  }
+  if (!data) return null;
+
+  const row = data as AdminPropertyDetailRow;
+  const parsedPriceValue =
+    row.price_value !== null && row.price_value !== undefined
+      ? Number(row.price_value)
+      : Number(String(row.price).replace(/[^0-9.]/g, ""));
+  const parsedArea = parseFloat(String(row.area).replace(/[^0-9.]/g, ""));
+  const parsedBaths = Number(row.baths);
+  const validImages = Array.isArray(row.images)
+    ? row.images
+        .filter((img) => Boolean(img && typeof img.url === "string" && img.url.trim()))
+        .map((img, idx) => ({
+          url: img.url.trim(),
+          alt: img.alt?.trim() || `${row.title} - Photo ${idx + 1}`,
+        }))
+    : [];
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    location: row.location,
+    priceValue: Number.isFinite(parsedPriceValue) ? parsedPriceValue : 0,
+    period: row.period,
+    listingType: isListingType(row.listing_type) ? row.listing_type : "FOR SALE",
+    propertyType: isPropertyType(row.property_type) ? row.property_type : "House",
+    status: isPropertyStatus(row.status) ? row.status : "published",
+    beds: Number.isFinite(row.beds) ? row.beds : 3,
+    baths: Number.isFinite(parsedBaths) ? parsedBaths : 2,
+    area: Number.isFinite(parsedArea) ? parsedArea : 0,
+    yearBuilt: typeof row.year_built === "number" ? row.year_built : null,
+    garage: typeof row.garage === "number" ? row.garage : 0,
+    description: Array.isArray(row.description) ? row.description : [],
+    amenities: Array.isArray(row.amenities) ? row.amenities : [],
+    badges: Array.isArray(row.badges) ? row.badges : [],
+    isFeatured: Boolean(row.is_featured),
+    featuredBadge: row.featured_badge,
+    latitude: typeof row.latitude === "number" ? row.latitude : 37.4419,
+    longitude: typeof row.longitude === "number" ? row.longitude : -122.143,
+    agentName: row.agent_name || "Sarah Jenkins",
+    agentRole: row.agent_role || "Senior Luxury Advisor",
+    agentImage: row.agent_image || FALLBACK_IMAGE,
+    estimatedPayment: row.estimated_payment,
+    images: validImages,
+  };
 }
 
 interface ProfileRow {

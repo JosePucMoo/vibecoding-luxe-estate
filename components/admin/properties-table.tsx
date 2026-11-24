@@ -35,6 +35,12 @@ export default async function PropertiesTable({
       ) : (
         page.items.map((property) => {
           const detailHref = localePath(locale, `/properties/${property.slug}`);
+          const editHref = localePath(
+            locale,
+            `/admin/properties/${property.id}/edit`
+          );
+          const isPublished = property.status === "published";
+          const primaryHref = isPublished ? detailHref : editHref;
           const isSale = property.listingType === "FOR SALE";
           return (
             <div
@@ -44,7 +50,7 @@ export default async function PropertiesTable({
               {/* Property Details */}
               <div className="col-span-12 md:col-span-6 flex gap-4 items-center">
                 <Link
-                  href={detailHref}
+                  href={primaryHref}
                   className="relative h-20 w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200 block"
                 >
                   <Image
@@ -57,7 +63,7 @@ export default async function PropertiesTable({
                 </Link>
                 <div className="min-w-0">
                   <Link
-                    href={detailHref}
+                    href={primaryHref}
                     className="text-lg font-bold text-nordic group-hover:text-mosque transition-colors truncate block"
                   >
                     {property.title}
@@ -100,7 +106,7 @@ export default async function PropertiesTable({
               </div>
 
               {/* Status */}
-              <div className="col-span-6 md:col-span-2">
+              <div className="col-span-6 md:col-span-2 flex flex-wrap items-center gap-1.5">
                 <span
                   className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
                     isSale
@@ -115,31 +121,53 @@ export default async function PropertiesTable({
                   />
                   {label(dict.listingTypes, property.listingType)}
                 </span>
+                {property.status === "draft" && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                    {t.statusDraft}
+                  </span>
+                )}
+                {property.status === "sold" && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                    {t.statusSold}
+                  </span>
+                )}
               </div>
 
               {/* Actions */}
               <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
-                <Link
-                  href={detailHref}
-                  title={t.viewProperty}
-                  aria-label={t.viewProperty}
-                  className="p-2 rounded-lg text-gray-400 hover:text-mosque hover:bg-hint-of-green/30 transition-all"
-                >
-                  <span className="material-icons text-xl leading-none">
-                    visibility
+                {isPublished ? (
+                  <Link
+                    href={detailHref}
+                    title={t.viewProperty}
+                    aria-label={t.viewProperty}
+                    className="p-2 rounded-lg text-gray-400 hover:text-mosque hover:bg-hint-of-green/30 transition-all"
+                  >
+                    <span className="material-icons text-xl leading-none">
+                      visibility
+                    </span>
+                  </Link>
+                ) : (
+                  <span
+                    title={
+                      property.status === "draft" ? t.statusDraft : t.statusSold
+                    }
+                    className="p-2 rounded-lg text-gray-300 cursor-not-allowed"
+                  >
+                    <span className="material-icons text-xl leading-none">
+                      visibility_off
+                    </span>
                   </span>
-                </Link>
-                <button
-                  type="button"
-                  disabled
-                  title={`${t.editProperty} (${dict.admin.comingSoon})`}
+                )}
+                <Link
+                  href={editHref}
+                  title={t.editProperty}
                   aria-label={t.editProperty}
-                  className="p-2 rounded-lg text-gray-400 opacity-60 cursor-not-allowed"
+                  className="p-2 rounded-lg text-gray-400 hover:text-mosque hover:bg-hint-of-green/30 transition-all"
                 >
                   <span className="material-icons text-xl leading-none">
                     edit
                   </span>
-                </button>
+                </Link>
                 <button
                   type="button"
                   disabled

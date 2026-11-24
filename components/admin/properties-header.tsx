@@ -55,15 +55,13 @@ export default function PropertiesHeader({
             {t.filter}
           </button>
 
-          <button
-            type="button"
-            disabled
-            title={dict.admin.comingSoon}
-            className="bg-mosque text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-md shadow-mosque/20 inline-flex items-center gap-2 opacity-90 cursor-not-allowed"
+          <Link
+            href={localePath(locale, "/admin/properties/new")}
+            className="bg-mosque hover:bg-nordic text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-md shadow-mosque/20 inline-flex items-center gap-2 transition-colors"
           >
             <span className="material-icons text-base leading-none">add</span>
             {t.addProperty}
-          </button>
+          </Link>
         </div>
       </div>
 

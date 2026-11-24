@@ -1,14 +1,32 @@
 export type PropertyCategory = "all" | "house" | "apartment" | "villa" | "penthouse";
 
-export type PropertyType =
-  | "House"
-  | "Apartment"
-  | "Villa"
-  | "Penthouse"
-  | "Condo"
-  | "Townhouse";
+export const PROPERTY_TYPES = [
+  "House",
+  "Apartment",
+  "Villa",
+  "Penthouse",
+  "Condo",
+  "Townhouse",
+] as const;
 
-export type ListingType = "FOR SALE" | "FOR RENT";
+export type PropertyType = (typeof PROPERTY_TYPES)[number];
+
+export const LISTING_TYPES = ["FOR SALE", "FOR RENT"] as const;
+export type ListingType = (typeof LISTING_TYPES)[number];
+
+export const PROPERTY_STATUSES = ["published", "draft", "sold"] as const;
+export type PropertyStatus = (typeof PROPERTY_STATUSES)[number];
+
+export const CANONICAL_AMENITIES = [
+  "Swimming Pool",
+  "Gym",
+  "Parking",
+  "Air Conditioning",
+  "High-speed Wifi",
+  "Patio / Terrace",
+  "Smart Home System",
+  "Wine Cellar",
+] as const;
 
 export interface PropertyFilters {
   q?: string;
