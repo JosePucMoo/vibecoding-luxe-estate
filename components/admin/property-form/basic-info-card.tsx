@@ -34,6 +34,18 @@ interface BasicInfoCardProps {
   onFeaturedBadgeChange: (value: string) => void;
 }
 
+function ChevronDownIcon() {
+  return (
+    <span
+      aria-hidden="true"
+      className="material-icons pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 z-10 text-gray-500 leading-none select-none"
+      style={{ fontSize: "20px" }}
+    >
+      expand_more
+    </span>
+  );
+}
+
 export default function BasicInfoCard({
   title,
   slug,
@@ -60,24 +72,30 @@ export default function BasicInfoCard({
   const { dict } = useI18n();
   const t = dict.admin.propertyForm;
 
-  const inputBase =
-    "w-full text-base px-4 py-2.5 rounded-md border bg-white text-nordic placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all";
+  const labelClass = "block text-sm font-medium text-nordic mb-1.5";
+  const fieldBase =
+    "block w-full h-11 rounded-md border bg-white text-base font-normal text-nordic placeholder:text-gray-400 focus:outline-none focus:border-mosque focus:ring-1 focus:ring-mosque transition-all";
+  const inputClass = `${fieldBase} px-4 py-2.5`;
+  const selectClass = `${fieldBase} appearance-none pl-4 pr-10 py-2.5 border-gray-200 cursor-pointer`;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="px-8 py-6 border-b border-hint-green/30 flex items-center gap-3 bg-gradient-to-r from-hint-green/10 to-transparent">
         <div className="w-8 h-8 rounded-full bg-hint-green flex items-center justify-center text-nordic">
-          <span className="material-icons text-lg leading-none">info</span>
+          <span
+            className="material-icons text-lg leading-none"
+            style={{ fontFamily: "'Material Icons'" }}
+          >
+            info
+          </span>
         </div>
         <h2 className="text-xl font-bold text-nordic">{t.basicInfoTitle}</h2>
       </div>
 
       <div className="p-8 space-y-6">
-        <div className="group">
-          <label
-            htmlFor="property-title"
-            className="block text-sm font-medium text-nordic mb-1.5"
-          >
+        {/* Row 1: Property Title */}
+        <div>
+          <label htmlFor="property-title" className={labelClass}>
             {t.propertyTitle} <span className="text-red-500">*</span>
           </label>
           <input
@@ -86,26 +104,22 @@ export default function BasicInfoCard({
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             placeholder={t.propertyTitlePlaceholder}
-            className={`${inputBase} ${fieldErrors.title ? "border-red-400" : "border-gray-200"
-              }`}
+            className={`${inputClass} ${
+              fieldErrors.title ? "border-red-400" : "border-gray-200"
+            }`}
           />
           {fieldErrors.title && (
-            <p className="mt-1 text-xs text-red-600">{fieldErrors.title}</p>
+            <p className="mt-1.5 text-xs text-red-600">{fieldErrors.title}</p>
           )}
         </div>
 
+        {/* Row 2: Price, Listing Type, Property Type */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label
-              htmlFor="property-price"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-price" className={labelClass}>
               {t.priceLabel} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                $
-              </span>
               <input
                 id="property-price"
                 type="number"
@@ -114,67 +128,72 @@ export default function BasicInfoCard({
                 value={priceValue}
                 onChange={(e) => onPriceChange(e.target.value)}
                 placeholder={t.pricePlaceholder}
-                className={`w-full pl-7 pr-4 py-2.5 rounded-md border bg-white text-nordic placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-base font-medium ${fieldErrors.priceValue ? "border-red-400" : "border-gray-200"
-                  }`}
+                className={`${fieldBase} no-spinner pl-8 pr-4 py-2.5 ${
+                  fieldErrors.priceValue ? "border-red-400" : "border-gray-200"
+                }`}
               />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 z-10 text-gray-500 text-sm font-medium leading-none select-none"
+              >
+                $
+              </span>
             </div>
             {fieldErrors.priceValue && (
-              <p className="mt-1 text-xs text-red-600">
+              <p className="mt-1.5 text-xs text-red-600">
                 {fieldErrors.priceValue}
               </p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="property-listing-type"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-listing-type" className={labelClass}>
               {t.listingTypeLabel}
             </label>
-            <select
-              id="property-listing-type"
-              value={listingType}
-              onChange={(e) =>
-                onListingTypeChange(e.target.value as ListingType)
-              }
-              className={`${inputBase} border-gray-200 cursor-pointer`}
-            >
-              <option value="FOR SALE">{t.listingForSale}</option>
-              <option value="FOR RENT">{t.listingForRent}</option>
-            </select>
+            <div className="relative">
+              <select
+                id="property-listing-type"
+                value={listingType}
+                onChange={(e) =>
+                  onListingTypeChange(e.target.value as ListingType)
+                }
+                className={selectClass}
+              >
+                <option value="FOR SALE">{t.listingForSale}</option>
+                <option value="FOR RENT">{t.listingForRent}</option>
+              </select>
+              <ChevronDownIcon />
+            </div>
           </div>
 
           <div>
-            <label
-              htmlFor="property-type"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-type" className={labelClass}>
               {t.propertyTypeLabel}
             </label>
-            <select
-              id="property-type"
-              value={propertyType}
-              onChange={(e) =>
-                onPropertyTypeChange(e.target.value as PropertyType)
-              }
-              className={`${inputBase} border-gray-200 cursor-pointer`}
-            >
-              {PROPERTY_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {label(dict.propertyTypes, type)}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                id="property-type"
+                value={propertyType}
+                onChange={(e) =>
+                  onPropertyTypeChange(e.target.value as PropertyType)
+                }
+                className={selectClass}
+              >
+                {PROPERTY_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {label(dict.propertyTypes, type)}
+                  </option>
+                ))}
+              </select>
+              <ChevronDownIcon />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+        {/* Row 3: URL Slug, Status, Estimated Payment */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-100">
           <div>
-            <label
-              htmlFor="property-slug"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-slug" className={labelClass}>
               {t.slugLabel} <span className="text-red-500">*</span>
             </label>
             <input
@@ -183,42 +202,42 @@ export default function BasicInfoCard({
               value={slug}
               onChange={(e) => onSlugChange(e.target.value)}
               placeholder={t.slugPlaceholder}
-              className={`w-full text-sm px-4 py-2.5 rounded-md border bg-white text-nordic placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all ${fieldErrors.slug ? "border-red-400" : "border-gray-200"
-                }`}
+              className={`${inputClass} ${
+                fieldErrors.slug ? "border-red-400" : "border-gray-200"
+              }`}
             />
             {fieldErrors.slug ? (
-              <p className="mt-1 text-xs text-red-600">{fieldErrors.slug}</p>
+              <p className="mt-1.5 text-xs text-red-600">{fieldErrors.slug}</p>
             ) : (
-              <p className="mt-1 text-xs text-gray-400 truncate">
+              <p className="mt-1.5 text-xs text-gray-400 truncate">
                 {format(t.slugHint, { slug: slug || "..." })}
               </p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="property-status"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-status" className={labelClass}>
               {t.statusLabel}
             </label>
-            <select
-              id="property-status"
-              value={status}
-              onChange={(e) => onStatusChange(e.target.value as PropertyStatus)}
-              className="w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm cursor-pointer"
-            >
-              <option value="published">{t.statusPublished}</option>
-              <option value="draft">{t.statusDraft}</option>
-              <option value="sold">{t.statusSold}</option>
-            </select>
+            <div className="relative">
+              <select
+                id="property-status"
+                value={status}
+                onChange={(e) =>
+                  onStatusChange(e.target.value as PropertyStatus)
+                }
+                className={selectClass}
+              >
+                <option value="published">{t.statusPublished}</option>
+                <option value="draft">{t.statusDraft}</option>
+                <option value="sold">{t.statusSold}</option>
+              </select>
+              <ChevronDownIcon />
+            </div>
           </div>
 
           <div>
-            <label
-              htmlFor="property-estimated-payment"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-estimated-payment" className={labelClass}>
               {t.estimatedPaymentLabel}
             </label>
             <input
@@ -227,17 +246,15 @@ export default function BasicInfoCard({
               value={estimatedPayment}
               onChange={(e) => onEstimatedPaymentChange(e.target.value)}
               placeholder={t.estimatedPaymentPlaceholder}
-              className="w-full text-sm px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all"
+              className={`${inputClass} border-gray-200`}
             />
           </div>
         </div>
 
+        {/* Row 4: Badges & Featured Collection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <div>
-            <label
-              htmlFor="property-badges"
-              className="block text-sm font-medium text-nordic mb-1.5"
-            >
+            <label htmlFor="property-badges" className={labelClass}>
               {t.badgesLabel}
             </label>
             <input
@@ -246,38 +263,33 @@ export default function BasicInfoCard({
               value={badgesText}
               onChange={(e) => onBadgesChange(e.target.value)}
               placeholder={t.badgesPlaceholder}
-              className="w-full text-sm px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all"
+              className={`${inputClass} border-gray-200`}
             />
           </div>
 
-          <div className="space-y-3 pt-1">
-            <label className="flex items-center gap-2.5 cursor-pointer group pt-6">
+          <div>
+            <span className={labelClass}>{t.featuredBadgeLabel}</span>
+            <label className="w-full h-11 px-4 rounded-md border border-gray-200 bg-white hover:border-mosque/50 flex items-center gap-3 cursor-pointer transition-all select-none">
               <input
                 type="checkbox"
                 checked={isFeatured}
                 onChange={(e) => onIsFeaturedChange(e.target.checked)}
                 className="w-4 h-4 accent-mosque text-mosque border-gray-300 rounded focus:ring-mosque cursor-pointer"
               />
-              <span className="text-sm font-medium text-nordic group-hover:text-mosque transition-colors">
+              <span className="text-base font-normal text-nordic truncate">
                 {t.isFeaturedLabel}
               </span>
             </label>
 
             {isFeatured && (
-              <div>
-                <label
-                  htmlFor="property-featured-badge"
-                  className="block text-xs font-medium text-gray-500 mb-1"
-                >
-                  {t.featuredBadgeLabel}
-                </label>
+              <div className="mt-3">
                 <input
                   id="property-featured-badge"
                   type="text"
                   value={featuredBadge}
                   onChange={(e) => onFeaturedBadgeChange(e.target.value)}
                   placeholder={t.featuredBadgePlaceholder}
-                  className="w-full text-sm px-3.5 py-2 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-mosque focus:border-mosque transition-all"
+                  className={`${inputClass} border-gray-200`}
                 />
               </div>
             )}
