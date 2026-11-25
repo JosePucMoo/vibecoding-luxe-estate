@@ -68,20 +68,20 @@ export default async function PropertySidebar({
               <span>{agent.role}</span>
             </div>
           </div>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-2">
             <button
               type="button"
               aria-label={format(dict.property.chatWith, { name: agent.name })}
-              className="p-2 rounded-full bg-[#006655]/10 text-[#006655] hover:bg-[#006655] hover:text-white transition-colors cursor-pointer"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#006655]/10 text-[#006655] hover:bg-[#006655] hover:text-white transition-colors cursor-pointer flex-shrink-0"
             >
-              <span className="material-icons text-sm leading-none">chat</span>
+              <span className="material-icons text-[20px] leading-none">chat</span>
             </button>
             <button
               type="button"
               aria-label={format(dict.property.call, { name: agent.name })}
-              className="p-2 rounded-full bg-[#006655]/10 text-[#006655] hover:bg-[#006655] hover:text-white transition-colors cursor-pointer"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#006655]/10 text-[#006655] hover:bg-[#006655] hover:text-white transition-colors cursor-pointer flex-shrink-0"
             >
-              <span className="material-icons text-sm leading-none">call</span>
+              <span className="material-icons text-[20px] leading-none">call</span>
             </button>
           </div>
         </div>
