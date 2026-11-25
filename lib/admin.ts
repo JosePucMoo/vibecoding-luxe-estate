@@ -8,6 +8,7 @@ import {
   isUserStatus,
   type AdminPage,
   type AdminProperty,
+  type AdminPropertyActivityFilter,
   type AdminPropertyRecord,
   type AdminPropertyStats,
   type AdminUserProfile,
@@ -42,6 +43,7 @@ interface PropertyRow {
   listing_type: ListingType;
   property_type: string;
   status: string;
+  is_active: boolean;
   beds: number;
   baths: number | string;
   area: string;
@@ -61,6 +63,7 @@ interface AdminPropertyDetailRow {
   listing_type: string;
   property_type: string;
   status: string;
+  is_active: boolean;
   beds: number;
   baths: number | string;
   area: string;
@@ -83,6 +86,7 @@ interface AdminPropertyDetailRow {
 export async function getAdminProperties(opts: {
   q?: string;
   listingType?: ListingType;
+  activity?: AdminPropertyActivityFilter;
   page?: number;
 }): Promise<AdminPage<AdminProperty>> {
   const client = await createClient();
@@ -91,7 +95,7 @@ export async function getAdminProperties(opts: {
   let query = client
     .from("properties")
     .select(
-      "id, slug, title, location, price, period, listing_type, property_type, status, beds, baths, area, is_featured, estimated_payment, images",
+      "id, slug, title, location, price, period, listing_type, property_type, status, is_active, beds, baths, area, is_featured, estimated_payment, images",
       { count: "exact" }
     );
 
@@ -102,6 +106,8 @@ export async function getAdminProperties(opts: {
     );
   }
   if (opts.listingType) query = query.eq("listing_type", opts.listingType);
+  if (opts.activity === "active") query = query.eq("is_active", true);
+  if (opts.activity === "inactive") query = query.eq("is_active", false);
 
   const { data, error, count } = await query
     .order("created_at", { ascending: false })
@@ -124,6 +130,7 @@ export async function getAdminProperties(opts: {
         listingType: row.listing_type,
         propertyType: row.property_type,
         status: isPropertyStatus(row.status) ? row.status : "published",
+        isActive: row.is_active !== false,
         beds: row.beds,
         baths: row.baths,
         area: row.area,
@@ -150,13 +157,18 @@ export async function getAdminPropertyStats(): Promise<AdminPropertyStats> {
     return count ?? 0;
   };
 
-  const [total, forSale, forRent, featured] = await Promise.all([
+  const [total, active, forSale, forRent, featured] = await Promise.all([
     countProperties(),
-    countProperties((q) => q.eq("listing_type", "FOR SALE")),
-    countProperties((q) => q.eq("listing_type", "FOR RENT")),
-    countProperties((q) => q.eq("is_featured", true)),
+    countProperties((q) => q.eq("is_active", true).eq("status", "published")),
+    countProperties((q) =>
+      q.eq("is_active", true).eq("listing_type", "FOR SALE")
+    ),
+    countProperties((q) =>
+      q.eq("is_active", true).eq("listing_type", "FOR RENT")
+    ),
+    countProperties((q) => q.eq("is_active", true).eq("is_featured", true)),
   ]);
-  return { total, forSale, forRent, featured };
+  return { total, active, forSale, forRent, featured };
 }
 
 export async function getAdminPropertyById(
@@ -169,7 +181,7 @@ export async function getAdminPropertyById(
   const { data, error } = await client
     .from("properties")
     .select(
-      "id, slug, title, location, price, price_value, period, listing_type, property_type, status, beds, baths, area, year_built, garage, description, amenities, badges, is_featured, featured_badge, latitude, longitude, agent_name, agent_role, agent_image, estimated_payment, images"
+      "id, slug, title, location, price, price_value, period, listing_type, property_type, status, is_active, beds, baths, area, year_built, garage, description, amenities, badges, is_featured, featured_badge, latitude, longitude, agent_name, agent_role, agent_image, estimated_payment, images"
     )
     .eq("id", trimmedId)
     .maybeSingle();
@@ -205,6 +217,7 @@ export async function getAdminPropertyById(
     listingType: isListingType(row.listing_type) ? row.listing_type : "FOR SALE",
     propertyType: isPropertyType(row.property_type) ? row.property_type : "House",
     status: isPropertyStatus(row.status) ? row.status : "published",
+    isActive: row.is_active !== false,
     beds: Number.isFinite(row.beds) ? row.beds : 3,
     baths: Number.isFinite(parsedBaths) ? parsedBaths : 2,
     area: Number.isFinite(parsedArea) ? parsedArea : 0,

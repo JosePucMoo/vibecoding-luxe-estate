@@ -202,6 +202,8 @@
       "filterAll": "Toutes",
       "filterSale": "À vendre",
       "filterRent": "À louer",
+      "filterActive": "Actives",
+      "filterInactive": "Désactivées",
       "statTotal": "Total des annonces",
       "statSale": "Propriétés actives",
       "statRent": "Vente en attente",
@@ -219,10 +221,21 @@
       "addProperty": "Ajouter une propriété",
       "clearFilters": "Effacer",
       "editProperty": "Modifier la propriété",
-      "deleteProperty": "Supprimer la propriété",
+      "deleteProperty": "Désactiver la propriété",
+      "deactivateProperty": "Désactiver la propriété",
+      "reactivateProperty": "Réactiver la propriété",
       "statusPublished": "Publiée",
       "statusDraft": "Brouillon",
-      "statusSold": "Vendue"
+      "statusSold": "Vendue",
+      "statusInactive": "Désactivée",
+      "deactivateModalTitle": "Désactiver la propriété ?",
+      "deactivateModalBody": "« {title} » ne sera pas supprimée de la base de données. Elle n'apparaîtra plus sur l'accueil ni dans les filtres de recherche, mais restera visible dans ce panneau d'administration pour de futures mises à jour.",
+      "deactivateConfirm": "Désactiver",
+      "deactivating": "Désactivation...",
+      "reactivating": "Réactivation...",
+      "deactivateCancel": "Annuler",
+      "errorActionForbidden": "Vous n'avez pas l'autorisation de modifier cette propriété.",
+      "errorActionGeneric": "Impossible de mettre à jour l'état de la propriété. Veuillez réessayer."
     },
     "propertyForm": {
       "breadcrumbProperties": "Propriétés",
@@ -316,7 +329,12 @@
       "errorImages": "Veuillez téléverser au moins une image avant de publier.",
       "errorAgent": "Veuillez compléter les informations de l'agent.",
       "errorForbidden": "Vous n'avez pas l'autorisation d'enregistrer des biens.",
-      "errorGeneric": "Impossible d'enregistrer la propriété. Vérifiez les champs et réessayez."
+      "errorGeneric": "Impossible d'enregistrer la propriété. Vérifiez les champs et réessayez.",
+      "inactiveBannerTitle": "Cette propriété est actuellement désactivée",
+      "inactiveBannerBody": "Elle n'apparaît ni sur l'accueil ni dans les filtres de recherche. Vous pouvez mettre à jour ses informations ci-dessous ou la réactiver lorsqu'elle est prête.",
+      "pendingReactivateBanner": "Cette propriété sera réactivée lorsque vous enregistrerez les modifications.",
+      "reactivateButton": "Réactiver la propriété",
+      "keepInactiveButton": "Garder désactivée"
     },
     "users": {
       "title": "Annuaire des utilisateurs",

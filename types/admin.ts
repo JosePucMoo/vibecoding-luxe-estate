@@ -58,6 +58,7 @@ export interface AdminProperty {
   listingType: ListingType;
   propertyType: string;
   status: PropertyStatus;
+  isActive: boolean;
   beds: number;
   baths: number | string;
   area: string;
@@ -77,6 +78,7 @@ export interface AdminPropertyRecord {
   listingType: ListingType;
   propertyType: PropertyType;
   status: PropertyStatus;
+  isActive: boolean;
   beds: number;
   baths: number;
   area: number;
@@ -104,6 +106,7 @@ export interface PropertyFormPayload {
   listingType: ListingType;
   propertyType: PropertyType;
   status: PropertyStatus;
+  isActive: boolean;
   description: string;
   images: PropertyImage[];
   location: string;
@@ -146,8 +149,18 @@ export type PropertyMutationResult =
       fieldErrors?: Partial<Record<PropertyFieldErrorKey, string>>;
     };
 
+export type TogglePropertyActiveResult =
+  | { ok: true; id: string; isActive: boolean }
+  | {
+      ok: false;
+      error: "forbidden" | "invalid" | "not_found" | "generic";
+    };
+
+export type AdminPropertyActivityFilter = "active" | "inactive";
+
 export interface AdminPropertyStats {
   total: number;
+  active: number;
   forSale: number;
   forRent: number;
   featured: number;

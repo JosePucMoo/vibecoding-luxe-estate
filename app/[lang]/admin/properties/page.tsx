@@ -5,6 +5,7 @@ import PropertiesStats from "@/components/admin/properties-stats";
 import PropertiesTable from "@/components/admin/properties-table";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { getAdminProperties, getAdminPropertyStats } from "@/lib/admin";
+import type { AdminPropertyActivityFilter } from "@/types/admin";
 import type { ListingType } from "@/types/property";
 
 export const instant = false;
@@ -32,6 +33,11 @@ export default async function AdminPropertiesPage({ searchParams }: PageProps) {
     rawListing === "FOR SALE" || rawListing === "FOR RENT"
       ? rawListing
       : undefined;
+  const rawActivity = single(params.activity);
+  const activity: AdminPropertyActivityFilter | undefined =
+    rawActivity === "active" || rawActivity === "inactive"
+      ? rawActivity
+      : undefined;
   const pageNumber = Math.max(
     1,
     parseInt(single(params.page) || "1", 10) || 1
@@ -39,14 +45,14 @@ export default async function AdminPropertiesPage({ searchParams }: PageProps) {
 
   const [stats, result] = await Promise.all([
     getAdminPropertyStats(),
-    getAdminProperties({ q, listingType, page: pageNumber }),
+    getAdminProperties({ q, listingType, activity, page: pageNumber }),
   ]);
 
   return (
     <>
-      <PropertiesHeader q={q} listingType={listingType} />
+      <PropertiesHeader q={q} listingType={listingType} activity={activity} />
       <PropertiesStats stats={stats} />
-      <PropertiesTable page={result} params={{ q, listingType }} />
+      <PropertiesTable page={result} params={{ q, listingType, activity }} />
     </>
   );
 }

@@ -18,7 +18,7 @@ export default async function PropertiesStats({
     },
     {
       label: dict.admin.properties.statSale,
-      value: stats.forSale,
+      value: stats.active,
       icon: "check_circle",
       tone: "bg-hint-of-green text-mosque",
     },

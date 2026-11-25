@@ -5,6 +5,7 @@ import { format, label } from "@/i18n/format";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import type { AdminPage, AdminProperty } from "@/types/admin";
 import AdminPagination from "./admin-pagination";
+import PropertyActiveToggleButton from "./property-active-toggle-button";
 
 interface PropertiesTableProps {
   page: AdminPage<AdminProperty>;
@@ -39,19 +40,24 @@ export default async function PropertiesTable({
             locale,
             `/admin/properties/${property.id}/edit`
           );
-          const isPublished = property.status === "published";
-          const primaryHref = isPublished ? detailHref : editHref;
+          const isPubliclyVisible =
+            property.isActive && property.status === "published";
+          const primaryHref = isPubliclyVisible ? detailHref : editHref;
           const isSale = property.listingType === "FOR SALE";
           return (
             <div
               key={property.id}
-              className="group grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 border-b border-gray-100 last:border-b-0 hover:bg-clear-day transition-colors items-center"
+              className={`group grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 border-b border-gray-100 last:border-b-0 hover:bg-clear-day transition-colors items-center ${
+                property.isActive ? "" : "bg-gray-50/40"
+              }`}
             >
               {/* Property Details */}
               <div className="col-span-12 md:col-span-6 flex gap-4 items-center">
                 <Link
                   href={primaryHref}
-                  className="relative h-20 w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200 block"
+                  className={`relative h-20 w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200 block ${
+                    property.isActive ? "" : "opacity-60 grayscale-[35%]"
+                  }`}
                 >
                   <Image
                     src={property.imageUrl}
@@ -64,7 +70,9 @@ export default async function PropertiesTable({
                 <div className="min-w-0">
                   <Link
                     href={primaryHref}
-                    className="text-lg font-bold text-nordic group-hover:text-mosque transition-colors truncate block"
+                    className={`text-lg font-bold group-hover:text-mosque transition-colors truncate block ${
+                      property.isActive ? "text-nordic" : "text-nordic/65"
+                    }`}
                   >
                     {property.title}
                   </Link>
@@ -121,6 +129,11 @@ export default async function PropertiesTable({
                   />
                   {label(dict.listingTypes, property.listingType)}
                 </span>
+                {!property.isActive && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-red-50 text-red-700 border border-red-200">
+                    {t.statusInactive}
+                  </span>
+                )}
                 {property.status === "draft" && (
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
                     {t.statusDraft}
@@ -135,7 +148,7 @@ export default async function PropertiesTable({
 
               {/* Actions */}
               <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
-                {isPublished ? (
+                {isPubliclyVisible ? (
                   <Link
                     href={detailHref}
                     title={t.viewProperty}
@@ -149,7 +162,11 @@ export default async function PropertiesTable({
                 ) : (
                   <span
                     title={
-                      property.status === "draft" ? t.statusDraft : t.statusSold
+                      !property.isActive
+                        ? t.statusInactive
+                        : property.status === "draft"
+                          ? t.statusDraft
+                          : t.statusSold
                     }
                     className="p-2 rounded-lg text-gray-300 cursor-not-allowed"
                   >
@@ -168,17 +185,11 @@ export default async function PropertiesTable({
                     edit
                   </span>
                 </Link>
-                <button
-                  type="button"
-                  disabled
-                  title={`${t.deleteProperty} (${dict.admin.comingSoon})`}
-                  aria-label={t.deleteProperty}
-                  className="p-2 rounded-lg text-gray-400 opacity-60 cursor-not-allowed"
-                >
-                  <span className="material-icons text-xl leading-none">
-                    delete_outline
-                  </span>
-                </button>
+                <PropertyActiveToggleButton
+                  propertyId={property.id}
+                  propertyTitle={property.title}
+                  isActive={property.isActive}
+                />
               </div>
             </div>
           );

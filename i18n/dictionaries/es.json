@@ -202,6 +202,8 @@
       "filterAll": "Todas",
       "filterSale": "En venta",
       "filterRent": "En alquiler",
+      "filterActive": "Activas",
+      "filterInactive": "Desactivadas",
       "statTotal": "Total de anuncios",
       "statSale": "Propiedades activas",
       "statRent": "Venta pendiente",
@@ -219,10 +221,21 @@
       "addProperty": "Agregar propiedad",
       "clearFilters": "Limpiar",
       "editProperty": "Editar propiedad",
-      "deleteProperty": "Eliminar propiedad",
+      "deleteProperty": "Desactivar propiedad",
+      "deactivateProperty": "Desactivar propiedad",
+      "reactivateProperty": "Reactivar propiedad",
       "statusPublished": "Publicada",
       "statusDraft": "Borrador",
-      "statusSold": "Vendida"
+      "statusSold": "Vendida",
+      "statusInactive": "Desactivada",
+      "deactivateModalTitle": "¿Desactivar propiedad?",
+      "deactivateModalBody": "\"{title}\" no se eliminará de la base de datos. Dejará de aparecer en las páginas de inicio y en los filtros de búsqueda, pero seguirá visible en el panel administrativo para futuras actualizaciones.",
+      "deactivateConfirm": "Desactivar",
+      "deactivating": "Desactivando...",
+      "reactivating": "Reactivando...",
+      "deactivateCancel": "Cancelar",
+      "errorActionForbidden": "No tienes permisos para modificar esta propiedad.",
+      "errorActionGeneric": "No se pudo actualizar el estado de la propiedad. Inténtalo de nuevo."
     },
     "propertyForm": {
       "breadcrumbProperties": "Propiedades",
@@ -316,7 +329,12 @@
       "errorImages": "Sube al menos una imagen antes de publicar la propiedad.",
       "errorAgent": "Completa los datos del agente asignado.",
       "errorForbidden": "No tienes permisos para guardar propiedades.",
-      "errorGeneric": "No se pudo guardar la propiedad. Revisa los campos e inténtalo de nuevo."
+      "errorGeneric": "No se pudo guardar la propiedad. Revisa los campos e inténtalo de nuevo.",
+      "inactiveBannerTitle": "Esta propiedad se encuentra desactivada",
+      "inactiveBannerBody": "No aparece en el inicio ni en los filtros de búsqueda. Puedes actualizar sus datos a continuación conservándola inactiva o reactivarla cuando esté lista.",
+      "pendingReactivateBanner": "Esta propiedad volverá a estar activa cuando guardes los cambios.",
+      "reactivateButton": "Reactivar propiedad",
+      "keepInactiveButton": "Mantener desactivada"
     },
     "users": {
       "title": "Directorio de usuarios",

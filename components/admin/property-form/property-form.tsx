@@ -81,6 +81,9 @@ export default function PropertyForm({
   const [status, setStatus] = useState<PropertyStatus>(
     initialData?.status ?? "published"
   );
+  const [isActive, setIsActive] = useState<boolean>(
+    initialData?.isActive ?? true
+  );
   const [estimatedPayment, setEstimatedPayment] = useState(
     initialData?.estimatedPayment ?? ""
   );
@@ -283,6 +286,7 @@ export default function PropertyForm({
       listingType,
       propertyType,
       status: effectiveStatus,
+      isActive,
       description,
       images: images.map(({ url, alt }) => ({ url, alt })),
       location,
@@ -406,6 +410,54 @@ export default function PropertyForm({
           </button>
         </div>
       </header>
+
+      {isEdit && initialData && !initialData.isActive && (
+        <div
+          role="status"
+          className={`mb-6 px-5 py-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+            isActive
+              ? "bg-hint-of-green/40 border-mosque/20 text-nordic"
+              : "bg-amber-50/90 border-amber-200 text-amber-950"
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <span
+              className={`material-icons text-xl leading-none mt-0.5 ${
+                isActive ? "text-mosque" : "text-amber-600"
+              }`}
+            >
+              {isActive ? "check_circle" : "visibility_off"}
+            </span>
+            <div>
+              {isActive ? (
+                <p className="text-sm font-medium text-nordic">
+                  {t.pendingReactivateBanner}
+                </p>
+              ) : (
+                <>
+                  <p className="text-sm font-semibold">{t.inactiveBannerTitle}</p>
+                  <p className="text-xs text-amber-800/90 mt-0.5">
+                    {t.inactiveBannerBody}
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            disabled={isPending || isUploading}
+            onClick={() => setIsActive((prev) => !prev)}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer disabled:opacity-60 ${
+              isActive
+                ? "bg-white border border-gray-200 text-nordic hover:bg-gray-50"
+                : "bg-mosque hover:bg-nordic text-white shadow-sm"
+            }`}
+          >
+            {isActive ? t.keepInactiveButton : t.reactivateButton}
+          </button>
+        </div>
+      )}
 
       {bannerError && (
         <div

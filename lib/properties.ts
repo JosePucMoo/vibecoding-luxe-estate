@@ -199,6 +199,7 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
     .select(
       "id, slug, title, location, price, beds, baths, area, featured_badge, images, is_favorite, sort_order"
     )
+    .eq("is_active", true)
     .eq("status", "published")
     .eq("is_featured", true)
     .order("sort_order", { ascending: true })
@@ -247,6 +248,7 @@ export async function getMarketProperties(
       "id, slug, title, location, price, period, listing_type, beds, baths, area, images, is_favorite, sort_order",
       { count: "exact" }
     )
+    .eq("is_active", true)
     .eq("status", "published");
 
   if (!filteringActive) {
@@ -323,6 +325,7 @@ export async function countMatchingProperties(
   let query = supabase
     .from("properties")
     .select("id", { count: "exact", head: true })
+    .eq("is_active", true)
     .eq("status", "published");
 
   if (!filteringActive) {
@@ -388,6 +391,7 @@ export const getPropertyBySlug = cache(
         "id, slug, title, location, price, period, listing_type, beds, baths, area, garage, description, amenities, badges, is_featured, featured_badge, latitude, longitude, agent_name, agent_role, agent_image, estimated_payment, images, is_favorite"
       )
       .eq("slug", slug)
+      .eq("is_active", true)
       .eq("status", "published")
       .maybeSingle();
 

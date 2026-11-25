@@ -4,21 +4,24 @@ import { useState } from "react";
 import Link from "next/link";
 import { localePath } from "@/i18n/config";
 import { useI18n } from "@/i18n/i18n-provider";
+import type { AdminPropertyActivityFilter } from "@/types/admin";
 import type { ListingType } from "@/types/property";
 import { adminHref } from "./admin-url";
 
 interface PropertiesHeaderProps {
   q?: string;
   listingType?: ListingType;
+  activity?: AdminPropertyActivityFilter;
 }
 
 export default function PropertiesHeader({
   q,
   listingType,
+  activity,
 }: PropertiesHeaderProps) {
   const { locale, dict } = useI18n();
   const t = dict.admin.properties;
-  const hasActiveFilter = Boolean(q || listingType);
+  const hasActiveFilter = Boolean(q || listingType || activity);
   const [showFilters, setShowFilters] = useState(hasActiveFilter);
 
   const basePath = localePath(locale, "/admin/properties");
@@ -26,6 +29,14 @@ export default function PropertiesHeader({
     { value: undefined, text: t.filterAll },
     { value: "FOR SALE", text: t.filterSale },
     { value: "FOR RENT", text: t.filterRent },
+  ];
+  const activityFilters: {
+    value?: AdminPropertyActivityFilter;
+    text: string;
+  }[] = [
+    { value: undefined, text: t.filterAll },
+    { value: "active", text: t.filterActive },
+    { value: "inactive", text: t.filterInactive },
   ];
 
   return (
@@ -76,6 +87,9 @@ export default function PropertiesHeader({
             {listingType && (
               <input type="hidden" name="listingType" value={listingType} />
             )}
+            {activity && (
+              <input type="hidden" name="activity" value={activity} />
+            )}
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <span className="material-icons text-xl leading-none text-nordic/40">
                 search
@@ -98,15 +112,43 @@ export default function PropertiesHeader({
                 return (
                   <Link
                     key={filter.text}
-                    href={adminHref(basePath, { q, listingType: filter.value })}
+                    href={adminHref(basePath, {
+                      q,
+                      listingType: filter.value,
+                      activity,
+                    })}
                     aria-current={active ? "true" : undefined}
-                    className={`inline-flex items-center justify-center px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
+                    className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
                       active
                         ? "bg-mosque text-white shadow-sm"
                         : "text-nordic/70 hover:text-nordic hover:bg-white/70"
                     }`}
                   >
                     {filter.text}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="inline-flex items-center bg-clear-day p-1 rounded-lg border border-mosque/10">
+              {activityFilters.map((item) => {
+                const active = activity === item.value;
+                return (
+                  <Link
+                    key={`activity-${item.value ?? "all"}`}
+                    href={adminHref(basePath, {
+                      q,
+                      listingType,
+                      activity: item.value,
+                    })}
+                    aria-current={active ? "true" : undefined}
+                    className={`inline-flex items-center justify-center px-3.5 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
+                      active
+                        ? "bg-nordic text-white shadow-sm"
+                        : "text-nordic/70 hover:text-nordic hover:bg-white/70"
+                    }`}
+                  >
+                    {item.text}
                   </Link>
                 );
               })}

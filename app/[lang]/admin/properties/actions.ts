@@ -15,6 +15,7 @@ import {
   type PropertyFieldErrorKey,
   type PropertyFormPayload,
   type PropertyMutationResult,
+  type TogglePropertyActiveResult,
 } from "@/types/admin";
 import type { PropertyImage } from "@/types/property";
 
@@ -60,6 +61,7 @@ interface ValidatedPropertyRow {
   listing_type: "FOR SALE" | "FOR RENT";
   property_type: string;
   status: "published" | "draft" | "sold";
+  is_active: boolean;
   beds: number;
   baths: number;
   area: string;
@@ -114,6 +116,7 @@ function validatePayload(payload: PropertyFormPayload): {
   const status = isPropertyStatus(payload.status)
     ? payload.status
     : "published";
+  const isActive = payload.isActive !== false;
 
   const location = (payload.location ?? "").trim();
   if (!isDraft && (location.length < 2 || location.length > 200)) {
@@ -173,7 +176,7 @@ function validatePayload(payload: PropertyFormPayload): {
         }))
     : [];
 
-  if (status === "published" && sanitizedImages.length === 0) {
+  if (status === "published" && isActive && sanitizedImages.length === 0) {
     fieldErrors.images = "images";
   }
 
@@ -254,6 +257,7 @@ function validatePayload(payload: PropertyFormPayload): {
       listing_type: listingType,
       property_type: propertyType,
       status,
+      is_active: isActive,
       beds,
       baths,
       area: areaLabel,
@@ -461,4 +465,57 @@ export async function updatePropertyAction(
 
   revalidatePropertyPaths([existing.slug, row.slug], targetId);
   return { ok: true, id: targetId, slug: row.slug };
+}
+
+/**
+ * Soft-deactivates (or reactivates) a property without deleting it from the
+ * database or removing its images from Storage, so it remains editable in the
+ * admin dashboard while being hidden from all public views and search filters.
+ */
+export async function setPropertyActiveStateAction(
+  id: string,
+  isActive: boolean
+): Promise<TogglePropertyActiveResult> {
+  const admin = await getCurrentUser();
+  if (!admin || admin.role !== "admin" || admin.status !== "active") {
+    return { ok: false, error: "forbidden" };
+  }
+
+  const targetId = typeof id === "string" ? id.trim() : "";
+  if (!targetId || targetId.length > 160 || typeof isActive !== "boolean") {
+    return { ok: false, error: "invalid" };
+  }
+
+  const supabase = await createClient();
+
+  const { data: existing, error: fetchError } = await supabase
+    .from("properties")
+    .select("id, slug")
+    .eq("id", targetId)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("Error loading property for active state change:", fetchError);
+    return { ok: false, error: "generic" };
+  }
+  if (!existing) {
+    return { ok: false, error: "not_found" };
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from("properties")
+    .update({ is_active: isActive })
+    .eq("id", targetId)
+    .select("id, slug, is_active");
+
+  if (updateError) {
+    console.error("Error updating property active state:", updateError);
+    return { ok: false, error: "generic" };
+  }
+  if (!updated || updated.length === 0) {
+    return { ok: false, error: "forbidden" };
+  }
+
+  revalidatePropertyPaths([existing.slug], targetId);
+  return { ok: true, id: targetId, isActive };
 }

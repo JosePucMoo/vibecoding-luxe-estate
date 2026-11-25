@@ -202,6 +202,8 @@
       "filterAll": "All",
       "filterSale": "For Sale",
       "filterRent": "For Rent",
+      "filterActive": "Active",
+      "filterInactive": "Deactivated",
       "statTotal": "Total Listings",
       "statSale": "Active Properties",
       "statRent": "Pending Sale",
@@ -219,10 +221,21 @@
       "addProperty": "Add New Property",
       "clearFilters": "Clear",
       "editProperty": "Edit Property",
-      "deleteProperty": "Delete Property",
+      "deleteProperty": "Deactivate Property",
+      "deactivateProperty": "Deactivate Property",
+      "reactivateProperty": "Reactivate Property",
       "statusPublished": "Published",
       "statusDraft": "Draft",
-      "statusSold": "Sold"
+      "statusSold": "Sold",
+      "statusInactive": "Deactivated",
+      "deactivateModalTitle": "Deactivate property?",
+      "deactivateModalBody": "\"{title}\" will not be deleted from the database. It will stop appearing on the home page and in search filters, while remaining available in this admin panel for future updates.",
+      "deactivateConfirm": "Deactivate",
+      "deactivating": "Deactivating...",
+      "reactivating": "Reactivating...",
+      "deactivateCancel": "Cancel",
+      "errorActionForbidden": "You do not have permission to modify this property.",
+      "errorActionGeneric": "Could not update the property state. Please try again."
     },
     "propertyForm": {
       "breadcrumbProperties": "Properties",
@@ -316,7 +329,12 @@
       "errorImages": "Please upload at least one image before publishing.",
       "errorAgent": "Please complete the listing agent information.",
       "errorForbidden": "You do not have permission to save properties.",
-      "errorGeneric": "Could not save the property. Please check the fields and try again."
+      "errorGeneric": "Could not save the property. Please check the fields and try again.",
+      "inactiveBannerTitle": "This property is currently deactivated",
+      "inactiveBannerBody": "It does not appear on the home page or in search filters. You can update its details below and keep it deactivated, or reactivate it whenever ready.",
+      "pendingReactivateBanner": "This property will be reactivated when you save your changes.",
+      "reactivateButton": "Reactivate Property",
+      "keepInactiveButton": "Keep Deactivated"
     },
     "users": {
       "title": "User Directory",
