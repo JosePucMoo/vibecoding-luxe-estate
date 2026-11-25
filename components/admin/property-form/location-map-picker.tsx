@@ -48,7 +48,7 @@ export default function LocationMapPicker({
     });
 
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
         maxZoom: 19,
         subdomains: "abcd",
