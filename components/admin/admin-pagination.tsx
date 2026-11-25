@@ -165,13 +165,15 @@ export default async function AdminPagination({
     );
   }
 
+  const pages = buildPageNumbers(currentPage, totalPages);
+
   return (
     <nav
       aria-label={p.label}
       className="px-6 py-4 flex items-center justify-between gap-4"
     >
       <div>{summary}</div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-1.5">
         <Link
           href={hrefFor(currentPage - 1)}
           aria-disabled={!hasPrev}
@@ -181,6 +183,31 @@ export default async function AdminPagination({
         >
           {p.previous}
         </Link>
+
+        {pages.map((item, idx) =>
+          item === "ellipsis" ? (
+            <span
+              key={`ellipsis-${idx}`}
+              className="px-2 py-1 text-sm text-gray-400"
+            >
+              ...
+            </span>
+          ) : (
+            <Link
+              key={item}
+              href={hrefFor(item)}
+              aria-current={item === currentPage ? "page" : undefined}
+              className={`min-w-[32px] px-2.5 py-1 text-sm text-center font-medium border rounded-md transition-colors ${
+                item === currentPage
+                  ? "bg-mosque text-white border-mosque shadow-sm"
+                  : "border-gray-200 text-gray-600 hover:bg-white hover:text-mosque"
+              }`}
+            >
+              {item}
+            </Link>
+          )
+        )}
+
         <Link
           href={hrefFor(currentPage + 1)}
           aria-disabled={!hasNext}
